@@ -19,7 +19,7 @@
     });
 
     // BACKSTRETCH SLIDESHOW
-    $('#section_1').backstretch([
+    $('#home').backstretch([
       "images/slide/microsoft-edge-FAaz8lkinzs-unsplash.jpg", 
       "images/slide/surface-1x5jnhtlp3Y-unsplash.jpg",
       "images/slide/surface-71_s6RDJpGc-unsplash.jpg"
