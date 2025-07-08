@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f9fff8;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background: #1b5e20;
+  color: white;
+  text-align: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.logo {
+  height: 200px;
+  width: 200px;
+}
+
+main.age-confirmation {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.btn-no {
+  background-color: #d32f2f !important;
+}
+
+.btn-no:hover {
+  background-color: #b71c1c !important;
+}
+
+.age-confirmation button {
+  margin: 1rem;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #2e7d32;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.age-confirmation button:hover {
+  background-color: #1b5e20;
+}
+
+footer {
+  background: #eeeeee;
+  text-align: center;
+  padding: 1rem;
+}
+
+footer img {
+  height: 100px;
+  margin-bottom: 0.5rem;
+}
+
+footer p {
+  margin: 4px 0;
+}
