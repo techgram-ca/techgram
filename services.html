@@ -6,15 +6,269 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Techgram - Services</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-	<script src="assets/js/custom.js"></script>
+    <script src="assets/js/custom.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <style>
+        nav.scrolled {
+            background-color: rgba(2, 6, 23, 0.95) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            box-shadow: 0 4px 24px -1px rgba(6,182,212,0.07) !important;
+            border-bottom: 1px solid rgba(6,182,212,0.10) !important;
+        }
+    </style>
 </head>
 
-<body>
-                
+<body class="bg-slate-950">
+
+    <!-- Nav -->
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-slate-950/95 border-b border-cyan-500/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-500"><i class="ri-code-s-slash-line text-xl text-white"></i></div>
+                    <span class="text-xl font-bold text-white">Techgram</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="index.html#services" class="text-sm font-medium transition-colors whitespace-nowrap text-cyan-400">Services</a>
+                    <a href="index.html#about" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">About</a>
+                    <a href="index.html#solutions" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Solutions</a>
+                    <a href="index.html#contact" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Contact</a>
+                    <a href="index.html#contact" class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all whitespace-nowrap cursor-pointer">Get Started</a>
+                </div>
+                <button class="md:hidden w-10 h-10 flex items-center justify-center cursor-pointer text-white"><i class="ri-menu-line text-2xl"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="relative pt-40 pb-20 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+        </div>
+        <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full backdrop-blur-sm mb-6">
+                <i class="ri-service-line text-cyan-400"></i>
+                <span class="text-cyan-400 text-sm font-medium">Our Services</span>
+            </div>
+            <h1 class="text-5xl lg:text-6xl font-black text-white mb-6">What We Do</h1>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">From building your first website to running full digital campaigns — we cover everything your business needs online.</p>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-24 bg-slate-950 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- Website Development -->
+                <div id="website-development" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-code-box-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Website Development</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Custom websites designed and developed to reflect your brand, engage your visitors, and convert leads into customers.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Responsive Design</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">CMS Integration</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Performance Optimized</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Website Redesign & Maintenance -->
+                <div id="website-redesign-maintenance" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-tools-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Website Redesign &amp; Maintenance</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Refresh your existing site with a modern redesign, or keep it fast, secure, and up to date with our ongoing maintenance plans.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Site Redesign</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Security Monitoring</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Content Updates</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Shopify Stores -->
+                <div id="shopify-stores" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-store-2-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Shopify Stores</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Launch or redesign your e-commerce store with a Shopify setup built to drive sales and scale with your business.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Custom Storefront</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Product Setup</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Payment Integration</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Booking Systems -->
+                <div id="booking-systems" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-calendar-check-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Booking Systems</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Streamlined online booking and scheduling tools that let your customers book appointments anytime, from anywhere.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Real-Time Availability</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Automated Reminders</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Calendar Sync</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- SEO & Digital Marketing -->
+                <div id="seo-digital-marketing" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-megaphone-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">SEO &amp; Digital Marketing</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Boost your search rankings and grow your reach with targeted SEO strategies and data-driven campaigns across Google, Meta, and social platforms.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Keyword Research &amp; On-Page SEO</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Google &amp; Meta Ads</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Social Media &amp; Email Campaigns</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Custom Solutions -->
+                <div id="custom-solutions" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-settings-3-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Custom Solutions</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Have a unique need? We build custom web tools, portals, and integrations tailored specifically for your business workflows.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Custom Web Apps</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">API Integrations</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Business Portals</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Brand Identity & Design (NEW) -->
+                <div id="brand-identity-design" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10 md:col-start-2">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-palette-line text-3xl text-cyan-400"></i></div>
+                        <h2 class="text-xl font-bold text-white mb-4">Brand Identity &amp; Design</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Build a strong, memorable brand from the ground up — from logo and colour palette to typography and visual guidelines that set you apart.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Logo &amp; Visual Identity</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Brand Style Guide</span></div>
+                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Marketing Collateral</span></div>
+                        </div>
+                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-cyan-500/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-500"><i class="ri-code-s-slash-line text-xl text-white"></i></div>
+                        <span class="text-xl font-bold text-white">Techgram</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Helping businesses grow online with web development, e-commerce, and digital marketing solutions.</p>
+                    <div class="flex gap-3">
+                        <a href="https://www.facebook.com/techgram.ca" target="_blank" rel="noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-900 border border-cyan-500/20 text-gray-400 hover:text-cyan-400 hover:border-cyan-400 transition-all"><i class="ri-facebook-fill text-lg"></i></a>
+                        <a href="https://www.instagram.com/techgram.ca/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-900 border border-cyan-500/20 text-gray-400 hover:text-cyan-400 hover:border-cyan-400 transition-all"><i class="ri-instagram-fill text-lg"></i></a>
+                        <a href="https://share.google/jmD7U9Shs41Ar5rFB" target="_blank" rel="noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-900 border border-cyan-500/20 text-gray-400 hover:text-cyan-400 hover:border-cyan-400 transition-all"><i class="ri-google-fill text-lg"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h6 class="text-white font-bold mb-6">Solutions</h6>
+                    <ul class="space-y-3">
+                        <li><a href="#website-development" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Website Development</a></li>
+                        <li><a href="#website-redesign-maintenance" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Website Maintenance</a></li>
+                        <li><a href="#shopify-stores" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Shopify Stores</a></li>
+                        <li><a href="#booking-systems" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Booking Systems</a></li>
+                        <li><a href="#seo-digital-marketing" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">SEO Optimization</a></li>
+                        <li><a href="#seo-digital-marketing" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Digital Marketing</a></li>
+                        <li><a href="#custom-solutions" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Custom Solutions</a></li>
+                        <li><a href="#brand-identity-design" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Brand Identity &amp; Design</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="text-white font-bold mb-6">Company</h6>
+                    <ul class="space-y-3">
+                        <li><a href="index.html#about" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">About Us</a></li>
+                        <li><a href="index.html#services" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Services</a></li>
+                        <li><a href="index.html#solutions" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Solutions</a></li>
+                        <li><a href="index.html#contact" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="text-white font-bold mb-6">Contact Us</h6>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex-shrink-0 mt-0.5"><i class="ri-phone-line text-sm text-cyan-400"></i></div>
+                            <div>
+                                <div class="text-xs text-gray-500 mb-0.5">Phone</div>
+                                <a href="tel:+12895000307" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">+1-289-500-0307</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex-shrink-0 mt-0.5"><i class="ri-mail-line text-sm text-cyan-400"></i></div>
+                            <div>
+                                <div class="text-xs text-gray-500 mb-0.5">Email</div>
+                                <a href="mailto:hello@techgram.ca" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">hello@techgram.ca</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex-shrink-0 mt-0.5"><i class="ri-map-pin-line text-sm text-cyan-400"></i></div>
+                            <div>
+                                <div class="text-xs text-gray-500 mb-0.5">Location</div>
+                                <span class="text-sm text-gray-400">Toronto, Ontario, Canada</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-cyan-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-500">© 2025 Techgram. All rights reserved.</p>
+                <a href="https://techgram.ca" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-cyan-400 transition-colors">Developed by Techgram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        var nav = document.getElementById('main-nav');
+        function onScroll() {
+            if (window.scrollY > 40) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+
 </body>
 
 </html>
