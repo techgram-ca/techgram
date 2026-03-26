@@ -30,8 +30,15 @@
             max-height: 5000px;
             opacity: 1;
         }
+        .service-item {
+            display: flex;
+            flex-direction: column;
+        }
         .service-header {
             cursor: pointer;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         .service-header .chevron {
             transition: transform 0.3s ease;
@@ -98,12 +105,12 @@
         <div class="absolute inset-0 opacity-10">
             <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
         </div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start" id="services-grid">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="services-grid">
 
             <!-- ==================== 1. WEBSITE DEVELOPMENT ==================== -->
-            <div class="service-item expanded" id="website-development">
-                <div class="service-header active flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+            <div class="service-item" id="website-development">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-code-box-line text-2xl text-cyan-400"></i>
                         </div>
@@ -112,12 +119,18 @@
                             <p class="text-sm text-gray-400 mt-1">Custom-built websites tailored to your brand and goals</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $399</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4">From <span class="text-white font-semibold">$399</span> &nbsp;·&nbsp; 3 packages available</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Custom UI/UX Design</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Mobile-First Responsive Layout</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> SEO & Speed Optimization</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
-                <div class="service-content open bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
                     <!-- What is this service -->
                     <div class="mb-10">
                         <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is Website Development?</h3>
@@ -214,8 +227,8 @@
 
             <!-- ==================== 2. WEBSITE REDESIGN & MAINTENANCE ==================== -->
             <div class="service-item" id="website-redesign-maintenance">
-                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-tools-line text-2xl text-cyan-400"></i>
                         </div>
@@ -224,9 +237,15 @@
                             <p class="text-sm text-gray-400 mt-1">Refresh your site or keep it running smoothly year-round</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $299</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4">From <span class="text-white font-semibold">$99/mo</span> &nbsp;·&nbsp; 3 packages available</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Full Visual Redesign</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Security Monitoring & Backups</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Ongoing Content Updates</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
                 <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
@@ -317,8 +336,8 @@
 
             <!-- ==================== 3. SHOPIFY STORES ==================== -->
             <div class="service-item" id="shopify-stores">
-                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-store-2-line text-2xl text-cyan-400"></i>
                         </div>
@@ -327,9 +346,15 @@
                             <p class="text-sm text-gray-400 mt-1">Launch a fully functional e-commerce store on Shopify</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $499</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4">From <span class="text-white font-semibold">$499</span> &nbsp;·&nbsp; 3 packages available</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Custom Theme Design</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Payment & Shipping Setup</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Product Upload & SEO</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
                 <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
@@ -419,8 +444,8 @@
 
             <!-- ==================== 4. BOOKING SYSTEMS ==================== -->
             <div class="service-item" id="booking-systems">
-                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-calendar-check-line text-2xl text-cyan-400"></i>
                         </div>
@@ -429,9 +454,15 @@
                             <p class="text-sm text-gray-400 mt-1">Let your customers book appointments and services online</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $349</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4">From <span class="text-white font-semibold">$349</span> &nbsp;·&nbsp; 3 packages available</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Online Appointment Scheduling</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Email & SMS Notifications</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Calendar Sync & Admin Dashboard</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
                 <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
@@ -519,8 +550,8 @@
 
             <!-- ==================== 5. SEO & DIGITAL MARKETING ==================== -->
             <div class="service-item" id="seo-digital-marketing">
-                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-megaphone-line text-2xl text-cyan-400"></i>
                         </div>
@@ -529,9 +560,15 @@
                             <p class="text-sm text-gray-400 mt-1">Get found online and grow your business with data-driven strategies</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $299/mo</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4">From <span class="text-white font-semibold">$299/mo</span> &nbsp;·&nbsp; 3 packages available</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Keyword Research & On-Page SEO</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Google Ads & Meta Advertising</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Monthly Performance Reports</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
                 <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
@@ -620,8 +657,8 @@
 
             <!-- ==================== 6. CUSTOM SOLUTIONS ==================== -->
             <div class="service-item" id="custom-solutions">
-                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
-                    <div class="flex items-center gap-5">
+                <div class="service-header flex flex-col p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-start gap-4 mb-4">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
                             <i class="ri-settings-3-line text-2xl text-cyan-400"></i>
                         </div>
@@ -630,9 +667,15 @@
                             <p class="text-sm text-gray-400 mt-1">Tailored web tools, portals, and integrations for your unique needs</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Custom Quote</span>
-                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    <p class="text-sm text-gray-500 mb-4"><span class="text-white font-semibold">Custom Quote</span> &nbsp;·&nbsp; Scoped to your project</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Custom Web Portals & Dashboards</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> API & Third-Party Integrations</div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400"></i> Tailored to Your Business Needs</div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span class="text-sm font-medium text-cyan-400">View packages &amp; pricing</span>
+                        <i class="ri-arrow-down-s-line text-xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
                 <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
@@ -817,58 +860,83 @@
         }
         window.addEventListener('scroll', onScroll, { passive: true });
 
+        // Querystring-to-service-id map
+        var serviceMap = {
+            'website': 'website-development',
+            'redesign': 'website-redesign-maintenance',
+            'shopify': 'shopify-stores',
+            'booking': 'booking-systems',
+            'seo': 'seo-digital-marketing',
+            'custom': 'custom-solutions'
+        };
+
+        function closeAllServices() {
+            document.querySelectorAll('.service-item').forEach(function(item) {
+                item.querySelector('.service-content').classList.remove('open');
+                item.querySelector('.service-header').classList.remove('active');
+                item.classList.remove('expanded');
+            });
+        }
+
+        function openServiceById(serviceId) {
+            var target = document.getElementById(serviceId);
+            if (!target || !target.classList.contains('service-item')) return;
+            closeAllServices();
+            target.querySelector('.service-content').classList.add('open');
+            target.querySelector('.service-header').classList.add('active');
+            target.classList.add('expanded');
+            setTimeout(function() {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
         // Accordion: only one open at a time
         function toggleService(headerEl) {
             var serviceItem = headerEl.parentElement;
             var content = serviceItem.querySelector('.service-content');
             var isOpen = content.classList.contains('open');
 
-            // Close all
-            document.querySelectorAll('.service-item').forEach(function(item) {
-                item.querySelector('.service-content').classList.remove('open');
-                item.querySelector('.service-header').classList.remove('active');
-                item.classList.remove('expanded');
-            });
+            closeAllServices();
 
-            // If it was closed, open it
             if (!isOpen) {
                 content.classList.add('open');
                 headerEl.classList.add('active');
                 serviceItem.classList.add('expanded');
-                // Smooth scroll to opened service
                 setTimeout(function() {
                     serviceItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
             }
         }
 
-        // Handle hash navigation (from footer links)
-        function openServiceFromHash() {
+        // On load: check ?s= querystring, then hash, otherwise start all closed
+        window.addEventListener('load', function() {
+            var params = new URLSearchParams(window.location.search);
+            var s = params.get('s');
+            if (s && serviceMap[s]) {
+                openServiceById(serviceMap[s]);
+                return;
+            }
+            // Fallback: hash navigation (e.g. #website-development)
             var hash = window.location.hash;
             if (hash) {
                 var target = document.querySelector(hash);
                 if (target && target.classList.contains('service-item')) {
-                    var header = target.querySelector('.service-header');
-                    if (header) {
-                        // Close all first
-                        document.querySelectorAll('.service-item').forEach(function(item) {
-                            item.querySelector('.service-content').classList.remove('open');
-                            item.querySelector('.service-header').classList.remove('active');
-                            item.classList.remove('expanded');
-                        });
-                        // Open target
-                        target.querySelector('.service-content').classList.add('open');
-                        header.classList.add('active');
-                        target.classList.add('expanded');
-                        setTimeout(function() {
-                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 300);
-                    }
+                    openServiceById(target.id);
                 }
             }
-        }
-        window.addEventListener('hashchange', openServiceFromHash);
-        window.addEventListener('load', openServiceFromHash);
+            // Otherwise all cards remain closed (default)
+        });
+
+        // Handle hash changes after page load
+        window.addEventListener('hashchange', function() {
+            var hash = window.location.hash;
+            if (hash) {
+                var target = document.querySelector(hash);
+                if (target && target.classList.contains('service-item')) {
+                    openServiceById(target.id);
+                }
+            }
+        });
     </script>
 
 </body>
