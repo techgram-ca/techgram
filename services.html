@@ -874,9 +874,14 @@
 
         var NAV_HEIGHT = 96; // fixed nav height + buffer
 
-        function scrollToContent(content) {
-            var top = content.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+        function scrollToElement(el) {
+            // Double rAF ensures scroll runs after browser has recalculated layout
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    var top = el.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                });
+            });
         }
 
         function closeAllImmediate() {
@@ -895,8 +900,7 @@
             content.classList.add('open');
             target.querySelector('.service-header').classList.add('active');
             target.classList.add('expanded');
-            // Scroll to content after expansion begins
-            setTimeout(function() { scrollToContent(content); }, 80);
+            scrollToElement(content);
         }
 
         // Accordion: only one open at a time, smooth close
@@ -916,6 +920,8 @@
                 headerEl.classList.remove('active');
                 setTimeout(function() {
                     serviceItem.classList.remove('expanded');
+                    // After card collapses back to grid, scroll to card top
+                    scrollToElement(serviceItem.querySelector('.service-header'));
                 }, 520);
             } else {
                 // Switching/opening: close all others immediately, open this one
@@ -923,9 +929,30 @@
                 content.classList.add('open');
                 headerEl.classList.add('active');
                 serviceItem.classList.add('expanded');
-                setTimeout(function() { scrollToContent(content); }, 80);
+                scrollToElement(content);
             }
         }
+
+        // Intercept all #hash link clicks — scroll without updating URL
+        document.addEventListener('click', function(e) {
+            // Clean URL on first click (handles manual hash in address bar)
+            if (window.location.search || window.location.hash) {
+                history.replaceState(null, '', window.location.pathname);
+            }
+            var a = e.target.closest('a[href^="#"]');
+            if (!a) return;
+            var hash = a.getAttribute('href');
+            if (!hash || hash === '#') return;
+            var targetId = hash.substring(1);
+            var target = document.getElementById(targetId);
+            if (!target) return;
+            e.preventDefault();
+            if (target.classList.contains('service-item')) {
+                openServiceById(targetId);
+            } else {
+                scrollToElement(target);
+            }
+        });
 
         // On load: check ?s= querystring, then hash, otherwise all closed
         window.addEventListener('load', function() {
@@ -935,24 +962,6 @@
                 openServiceById(serviceMap[s]);
                 return;
             }
-            var hash = window.location.hash;
-            if (hash) {
-                var target = document.querySelector(hash);
-                if (target && target.classList.contains('service-item')) {
-                    openServiceById(target.id);
-                }
-            }
-        });
-
-        // Clean URL on first click anywhere (covers clicks outside service headers)
-        document.addEventListener('click', function() {
-            if (window.location.search || window.location.hash) {
-                history.replaceState(null, '', window.location.pathname);
-            }
-        }, { once: true });
-
-        // Handle hash changes (e.g. footer links)
-        window.addEventListener('hashchange', function() {
             var hash = window.location.hash;
             if (hash) {
                 var target = document.querySelector(hash);
