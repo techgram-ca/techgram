@@ -618,22 +618,40 @@
             onScroll();
         })();
 
-        document.addEventListener("DOMContentLoaded", function () {
-        const links = document.querySelectorAll('a[href^="#"]');
-        links.forEach((link) => {
-          link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute("href").substring(1);
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
+        var NAV_HEIGHT = 96;
+
+        function scrollToId(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    var top = el.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                });
+            });
+        }
+
+        // Intercept all #hash link clicks — scroll without updating URL
+        document.addEventListener('click', function(e) {
+            // Clean URL on any click if hash/search is present
+            if (window.location.search || window.location.hash) {
+                history.replaceState(null, '', window.location.pathname);
             }
-          });
+            var a = e.target.closest('a[href^="#"]');
+            if (!a) return;
+            var hash = a.getAttribute('href');
+            if (!hash || hash === '#') return;
+            e.preventDefault();
+            scrollToId(hash.substring(1));
         });
-      });
+
+        // On load: if hash present, scroll to it (then clean URL on first click)
+        window.addEventListener('load', function() {
+            var hash = window.location.hash;
+            if (hash) {
+                setTimeout(function() { scrollToId(hash.substring(1)); }, 100);
+            }
+        });
 </script>
 </body>
 
