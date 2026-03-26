@@ -65,6 +65,9 @@
         .plan-card.featured:hover {
             box-shadow: 0 20px 40px -12px rgba(6, 182, 212, 0.25);
         }
+        .service-item.expanded {
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 
@@ -90,32 +93,15 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <section class="relative pt-40 pb-20 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
-        <div class="absolute inset-0 opacity-20">
-            <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
-        </div>
-        <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full backdrop-blur-sm mb-6">
-                <i class="ri-service-line text-cyan-400"></i>
-                <span class="text-cyan-400 text-sm font-medium">Our Services</span>
-            </div>
-            <h1 class="text-5xl lg:text-6xl font-black text-white mb-6">What We Do</h1>
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto">From building your first website to running full digital campaigns — we cover everything your business needs online. Explore each service below for full details and pricing.</p>
-        </div>
-    </section>
-
     <!-- Services Accordion -->
-    <section class="py-24 bg-slate-950 relative overflow-hidden">
+    <section class="pt-36 pb-24 bg-slate-950 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
         </div>
-        <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 space-y-4">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start" id="services-grid">
 
             <!-- ==================== 1. WEBSITE DEVELOPMENT ==================== -->
-            <div class="service-item" id="website-development">
+            <div class="service-item expanded" id="website-development">
                 <div class="service-header active flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
@@ -841,12 +827,14 @@
             document.querySelectorAll('.service-item').forEach(function(item) {
                 item.querySelector('.service-content').classList.remove('open');
                 item.querySelector('.service-header').classList.remove('active');
+                item.classList.remove('expanded');
             });
 
             // If it was closed, open it
             if (!isOpen) {
                 content.classList.add('open');
                 headerEl.classList.add('active');
+                serviceItem.classList.add('expanded');
                 // Smooth scroll to opened service
                 setTimeout(function() {
                     serviceItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -866,10 +854,12 @@
                         document.querySelectorAll('.service-item').forEach(function(item) {
                             item.querySelector('.service-content').classList.remove('open');
                             item.querySelector('.service-header').classList.remove('active');
+                            item.classList.remove('expanded');
                         });
                         // Open target
                         target.querySelector('.service-content').classList.add('open');
                         header.classList.add('active');
+                        target.classList.add('expanded');
                         setTimeout(function() {
                             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 300);
