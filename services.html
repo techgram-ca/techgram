@@ -9,15 +9,61 @@
     <script src="assets/js/custom.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <style>
+        body { font-family: 'Inter', sans-serif; }
         nav.scrolled {
             background-color: rgba(2, 6, 23, 0.95) !important;
             backdrop-filter: blur(16px) !important;
             -webkit-backdrop-filter: blur(16px) !important;
             box-shadow: 0 4px 24px -1px rgba(6,182,212,0.07) !important;
             border-bottom: 1px solid rgba(6,182,212,0.10) !important;
+        }
+        .service-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .service-content.open {
+            max-height: 5000px;
+            opacity: 1;
+        }
+        .service-header {
+            cursor: pointer;
+        }
+        .service-header .chevron {
+            transition: transform 0.3s ease;
+        }
+        .service-header.active .chevron {
+            transform: rotate(180deg);
+        }
+        .service-header.active {
+            border-color: rgba(6, 182, 212, 0.4);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.5));
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .service-content.open {
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-top: none;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+        .plan-card {
+            transition: all 0.3s ease;
+        }
+        .plan-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(6, 182, 212, 0.15);
+        }
+        .plan-card.featured {
+            border-color: rgba(6, 182, 212, 0.5);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(20, 184, 166, 0.05));
+        }
+        .plan-card.featured:hover {
+            box-shadow: 0 20px 40px -12px rgba(6, 182, 212, 0.25);
         }
     </style>
 </head>
@@ -57,131 +103,648 @@
                 <span class="text-cyan-400 text-sm font-medium">Our Services</span>
             </div>
             <h1 class="text-5xl lg:text-6xl font-black text-white mb-6">What We Do</h1>
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto">From building your first website to running full digital campaigns — we cover everything your business needs online.</p>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">From building your first website to running full digital campaigns — we cover everything your business needs online. Explore each service below for full details and pricing.</p>
         </div>
     </section>
 
-    <!-- Services Grid -->
+    <!-- Services Accordion -->
     <section class="py-24 bg-slate-950 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute inset-0" style="background-image: linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
         </div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 space-y-4">
 
-                <!-- Website Development -->
-                <div id="website-development" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-code-box-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Website Development</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Custom websites designed and developed to reflect your brand, engage your visitors, and convert leads into customers.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Responsive Design</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">CMS Integration</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Performance Optimized</span></div>
+            <!-- ==================== 1. WEBSITE DEVELOPMENT ==================== -->
+            <div class="service-item" id="website-development">
+                <div class="service-header active flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-code-box-line text-2xl text-cyan-400"></i>
                         </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Website Development</h2>
+                            <p class="text-sm text-gray-400 mt-1">Custom-built websites tailored to your brand and goals</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $399</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
                     </div>
                 </div>
-
-                <!-- Website Redesign & Maintenance -->
-                <div id="website-redesign-maintenance" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-tools-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Website Redesign &amp; Maintenance</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Refresh your existing site with a modern redesign, or keep it fast, secure, and up to date with our ongoing maintenance plans.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Site Redesign</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Security Monitoring</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Content Updates</span></div>
+                <div class="service-content open bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <!-- What is this service -->
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is Website Development?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">We design and build custom websites from scratch that reflect your brand identity, engage visitors, and convert leads into customers. Whether you need a simple business landing page or a multi-page website with advanced features, we handle everything — from design mockups and development to deployment and launch. Every site we build is fully responsive, SEO-friendly, and optimized for speed.</p>
+                    </div>
+                    <!-- What's included -->
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Custom UI/UX Design</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Mobile-First Responsive Layout</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Domain & Hosting Setup</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Contact Form Integration</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Basic SEO Optimization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> SSL Certificate</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Speed & Performance Optimization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Google Analytics Setup</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Cross-Browser Testing</div>
                         </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
+                    </div>
+                    <!-- Pricing Plans -->
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Basic -->
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Basic</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$399</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Perfect for small businesses needing a clean online presence.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>1–3 Pages (Home, About, Contact)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Contact form (queries sent to your email)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Domain & Hosting Setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Mobile Responsive Design</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>SSL Certificate</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>3 Months Free Support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-500"><i class="ri-close-line text-gray-600 mt-0.5"></i><span>No custom email setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-500"><i class="ri-close-line text-gray-600 mt-0.5"></i><span>No CMS / Blog</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                        <!-- Professional -->
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Professional</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$799</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">For growing businesses that need more pages and features.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>5–8 Pages with custom design</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Custom email setup (e.g. info@yourbrand.com)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>CMS / Blog Integration</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Advanced Contact Forms with auto-replies</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Google Analytics & Search Console</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Social Media Integration</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>6 Months Free Support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>2 Rounds of Revisions</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get Started</a>
+                        </div>
+                        <!-- Enterprise -->
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Enterprise</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$1,499</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Full-scale website with premium features and priority support.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>10+ Pages, fully custom design</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Custom emails for your team</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Advanced CMS with user roles</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>E-commerce / Payment Integration</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Custom animations & interactions</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multi-language support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>12 Months Free Support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Unlimited Revisions during build</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Shopify Stores -->
-                <div id="shopify-stores" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-store-2-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Shopify Stores</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Launch or redesign your e-commerce store with a Shopify setup built to drive sales and scale with your business.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Custom Storefront</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Product Setup</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Payment Integration</span></div>
-                        </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
-                    </div>
-                </div>
-
-                <!-- Booking Systems -->
-                <div id="booking-systems" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-calendar-check-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Booking Systems</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Streamlined online booking and scheduling tools that let your customers book appointments anytime, from anywhere.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Real-Time Availability</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Automated Reminders</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Calendar Sync</span></div>
-                        </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
-                    </div>
-                </div>
-
-                <!-- SEO & Digital Marketing -->
-                <div id="seo-digital-marketing" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-megaphone-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">SEO &amp; Digital Marketing</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Boost your search rankings and grow your reach with targeted SEO strategies and data-driven campaigns across Google, Meta, and social platforms.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Keyword Research &amp; On-Page SEO</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Google &amp; Meta Ads</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Social Media &amp; Email Campaigns</span></div>
-                        </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
-                    </div>
-                </div>
-
-                <!-- Custom Solutions -->
-                <div id="custom-solutions" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-settings-3-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Custom Solutions</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Have a unique need? We build custom web tools, portals, and integrations tailored specifically for your business workflows.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Custom Web Apps</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">API Integrations</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Business Portals</span></div>
-                        </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
-                    </div>
-                </div>
-
-                <!-- Brand Identity & Design (NEW) -->
-                <div id="brand-identity-design" class="group relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/50 to-slate-900/30 border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm hover:shadow-xl hover:shadow-cyan-500/10 md:col-start-2">
-                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-teal-500/0 group-hover:from-cyan-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300"><i class="ri-palette-line text-3xl text-cyan-400"></i></div>
-                        <h2 class="text-xl font-bold text-white mb-4">Brand Identity &amp; Design</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Build a strong, memorable brand from the ground up — from logo and colour palette to typography and visual guidelines that set you apart.</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Logo &amp; Visual Identity</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Brand Style Guide</span></div>
-                            <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span class="text-sm text-gray-300">Marketing Collateral</span></div>
-                        </div>
-                        <a href="index.html#contact" class="mt-6 text-cyan-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer">Get Started<i class="ri-arrow-right-line"></i></a>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- ==================== 2. WEBSITE REDESIGN & MAINTENANCE ==================== -->
+            <div class="service-item" id="website-redesign-maintenance">
+                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-tools-line text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Website Redesign & Maintenance</h2>
+                            <p class="text-sm text-gray-400 mt-1">Refresh your site or keep it running smoothly year-round</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $299</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    </div>
+                </div>
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is Website Redesign & Maintenance?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">Is your current website outdated, slow, or not mobile-friendly? We'll give it a complete facelift with a modern design while keeping your existing content and SEO intact. Our maintenance plans ensure your site stays secure, fast, and up-to-date with regular updates, backups, and performance monitoring — so you can focus on running your business.</p>
+                    </div>
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Full Visual Redesign</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Content Migration</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Speed & Performance Optimization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Security Monitoring & Patches</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Weekly / Monthly Backups</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Plugin & CMS Updates</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Uptime Monitoring</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Content & Image Updates</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Monthly Performance Reports</div>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Basic Maintenance -->
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Basic Maintenance</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$99</span>
+                                    <span class="text-sm text-gray-500">/month</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Keep your site secure and running without hassle.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Monthly backups</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Security monitoring & patches</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>CMS / Plugin updates</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Uptime monitoring</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 2 minor content changes/month</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-500"><i class="ri-close-line text-gray-600 mt-0.5"></i><span>No design changes</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                        <!-- Redesign -->
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Full Redesign</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$599</span>
+                                    <span class="text-sm text-gray-500">one-time</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Complete visual overhaul with modern design standards.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Full visual redesign (up to 5 pages)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Content migration & optimization</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Mobile-first responsive update</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Speed optimization</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>SEO preservation & improvement</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>3 Months free maintenance included</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get Started</a>
+                        </div>
+                        <!-- Premium Maintenance -->
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Premium Maintenance</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$299</span>
+                                    <span class="text-sm text-gray-500">/month</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Full-service maintenance with priority support and reports.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Weekly backups</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>24/7 uptime monitoring</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Unlimited minor content updates</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Monthly performance & SEO reports</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Priority email & phone support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 2 design tweaks/month</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 3. SHOPIFY STORES ==================== -->
+            <div class="service-item" id="shopify-stores">
+                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-store-2-line text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Shopify Stores</h2>
+                            <p class="text-sm text-gray-400 mt-1">Launch a fully functional e-commerce store on Shopify</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $499</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    </div>
+                </div>
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is a Shopify Store Setup?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">We build beautiful, conversion-optimized Shopify stores that make it easy for you to sell online. From theme customization and product setup to payment gateways and shipping configuration — we handle the entire process so you can start selling from day one. Whether you're launching a new brand or migrating from another platform, we've got you covered.</p>
+                    </div>
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Shopify Store Setup & Configuration</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Theme Customization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Product Upload & Organization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Payment Gateway Integration</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Shipping & Tax Configuration</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Domain Connection</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Mobile-Optimized Storefront</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Essential App Integrations</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Store Training & Handover</div>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Starter Store</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$499</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Get your first store up and selling quickly.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Pre-built theme customization</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 20 products uploaded</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Payment & shipping setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Domain connection</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Basic SEO setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>1 Month free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Growth Store</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$999</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">A complete store built for conversions and growth.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Premium theme with deep customization</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 100 products uploaded</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Email marketing app setup (Klaviyo/Mailchimp)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Reviews & upsell app integration</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Abandoned cart recovery setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Google Analytics & Facebook Pixel</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>3 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Enterprise Store</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$1,999</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Fully custom store with advanced integrations.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Fully custom Shopify theme design</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Unlimited product upload</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multi-currency & multi-language</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Advanced app & API integrations</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Migration from existing platform</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Full staff training session</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>6 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 4. BOOKING SYSTEMS ==================== -->
+            <div class="service-item" id="booking-systems">
+                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-calendar-check-line text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Booking Systems</h2>
+                            <p class="text-sm text-gray-400 mt-1">Let your customers book appointments and services online</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $349</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    </div>
+                </div>
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is a Booking System?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">We build custom online booking and scheduling solutions that let your customers book appointments, classes, consultations, or services 24/7. Integrated directly into your website, these systems handle real-time availability, automated confirmations, reminders, and even payments — reducing no-shows and saving you hours of manual scheduling.</p>
+                    </div>
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Online Booking Calendar</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Real-Time Availability Display</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Email Confirmations & Reminders</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Google Calendar Sync</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Payment Collection (Optional)</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Staff / Resource Management</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> SMS Notifications</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Admin Dashboard</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Mobile-Friendly Interface</div>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Essential</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$349</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Simple booking for solo practitioners or small teams.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Single service type booking</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Email confirmations to client & admin</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Google Calendar sync</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Embedded on your website</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>2 Months free support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-500"><i class="ri-close-line text-gray-600 mt-0.5"></i><span>No payment collection</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Professional</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$699</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Multi-service booking with payments and reminders.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multiple service types & durations</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Online payment collection (Stripe)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Automated email & SMS reminders</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 3 staff members</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Admin dashboard for management</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>4 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Enterprise</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$1,299</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Full-featured booking platform for teams and locations.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Unlimited services & staff</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multi-location support</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Custom booking rules & buffers</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Waitlist & cancellation management</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>API integrations (CRM, etc.)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>6 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 5. SEO & DIGITAL MARKETING ==================== -->
+            <div class="service-item" id="seo-digital-marketing">
+                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-megaphone-line text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">SEO & Digital Marketing</h2>
+                            <p class="text-sm text-gray-400 mt-1">Get found online and grow your business with data-driven strategies</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Starts at $299/mo</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    </div>
+                </div>
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What is SEO & Digital Marketing?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">We help you rank higher on Google, drive targeted traffic to your website, and convert visitors into paying customers. Our services include on-page and technical SEO, Google Ads management, Meta (Facebook/Instagram) advertising, social media management, and email marketing campaigns. Every strategy is backed by data and tailored to your industry and audience.</p>
+                    </div>
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Keyword Research & Strategy</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> On-Page & Technical SEO</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Google Business Profile Optimization</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Google Ads (Search & Display)</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Meta Ads (Facebook & Instagram)</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Social Media Content & Management</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Email Marketing Campaigns</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Monthly Analytics & Reporting</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Competitor Analysis</div>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">SEO Starter</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$299</span>
+                                    <span class="text-sm text-gray-500">/month</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Build your organic presence and get found locally.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Keyword research (up to 10 keywords)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>On-page SEO optimization</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Google Business Profile setup</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Monthly ranking & traffic reports</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Basic technical SEO audit</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-500"><i class="ri-close-line text-gray-600 mt-0.5"></i><span>No paid ad management</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Growth Marketing</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$699</span>
+                                    <span class="text-sm text-gray-500">/month</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">SEO + Paid Ads for maximum visibility and leads.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Everything in SEO Starter</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Google Ads management (up to $2K ad spend)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Meta Ads management (Facebook + Instagram)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>2 blog posts / month (SEO optimized)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Competitor analysis</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Bi-weekly strategy calls</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get Started</a>
+                        </div>
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Full-Scale Digital</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$1,499</span>
+                                    <span class="text-sm text-gray-500">/month</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Complete digital marketing with dedicated management.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Everything in Growth Marketing</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Unlimited ad spend management</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Social media management (3 platforms)</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Email marketing automation</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>4 blog posts / month</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Dedicated account manager</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Weekly performance calls</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 6. CUSTOM SOLUTIONS ==================== -->
+            <div class="service-item" id="custom-solutions">
+                <div class="service-header flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-slate-900/70 to-slate-900/40 border border-cyan-500/15 hover:border-cyan-500/30 transition-all duration-300 backdrop-blur-sm" onclick="toggleService(this)">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex-shrink-0">
+                            <i class="ri-settings-3-line text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Custom Solutions</h2>
+                            <p class="text-sm text-gray-400 mt-1">Tailored web tools, portals, and integrations for your unique needs</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="hidden sm:inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">Custom Quote</span>
+                        <i class="ri-arrow-down-s-line text-2xl text-cyan-400 chevron"></i>
+                    </div>
+                </div>
+                <div class="service-content bg-slate-900/30 px-6 lg:px-10 pb-10 pt-8">
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="ri-question-line text-cyan-400"></i> What are Custom Solutions?</h3>
+                        <p class="text-gray-400 leading-relaxed max-w-4xl">When off-the-shelf tools don't fit, we build custom. From internal business portals and dashboards to complex API integrations and automated workflows — we design and develop tailored software solutions that solve your specific business challenges. Every project is scoped individually based on your requirements, timeline, and budget.</p>
+                    </div>
+                    <div class="mb-10">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="ri-list-check-2 text-cyan-400"></i> What's Included</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Discovery & Requirements Analysis</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Custom Web Application Development</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Third-Party API Integrations</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Database Design & Management</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> User Authentication & Roles</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Admin Dashboards & Reporting</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Workflow Automation</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Scalable Architecture</div>
+                            <div class="flex items-center gap-3 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 text-lg"></i> Full Documentation & Training</div>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2"><i class="ri-price-tag-3-line text-cyan-400"></i> Packages</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Micro Project</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$999</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Small tools, automations, or single-feature applications.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Single feature or tool development</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Up to 2 API integrations</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Basic admin panel</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Delivery in 2–3 weeks</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>2 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get a Quote</a>
+                        </div>
+                        <div class="plan-card featured rounded-2xl border border-cyan-500/30 bg-slate-900/50 p-7 flex flex-col relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Business Portal</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$2,999</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Multi-feature web application with user management.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multi-feature web application</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>User authentication & role-based access</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Dashboard with analytics & reports</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Multiple API integrations</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Delivery in 4–8 weeks</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>6 Months free support</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all">Get a Quote</a>
+                        </div>
+                        <div class="plan-card rounded-2xl border border-cyan-500/10 bg-slate-900/50 p-7 flex flex-col">
+                            <div class="mb-6">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Enterprise Platform</span>
+                                <div class="mt-2 flex items-baseline gap-1">
+                                    <span class="text-3xl font-black text-white">$7,999</span>
+                                    <span class="text-sm text-gray-500">starting</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Large-scale platform with scalable architecture.</p>
+                            </div>
+                            <div class="space-y-3 flex-1">
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Full-scale SaaS or platform build</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Complex workflow automation</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Scalable cloud architecture</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Comprehensive documentation</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>Team training & onboarding</span></div>
+                                <div class="flex items-start gap-2 text-sm text-gray-300"><i class="ri-check-line text-cyan-400 mt-0.5"></i><span>12 Months support & maintenance</span></div>
+                            </div>
+                            <a href="index.html#contact" class="mt-7 block text-center py-3 px-6 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold text-sm hover:bg-cyan-500/10 transition-all">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-slate-950 relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto px-6 lg:px-8 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Not sure which plan fits?</h2>
+            <p class="text-gray-400 mb-8 text-lg">Get in touch for a free consultation. We'll help you pick the right service and package for your budget and goals.</p>
+            <a href="index.html#contact" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/30 transition-all text-lg">
+                <i class="ri-chat-1-line"></i> Let's Talk
+            </a>
         </div>
     </section>
 
@@ -211,7 +774,6 @@
                         <li><a href="#seo-digital-marketing" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">SEO Optimization</a></li>
                         <li><a href="#seo-digital-marketing" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Digital Marketing</a></li>
                         <li><a href="#custom-solutions" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Custom Solutions</a></li>
-                        <li><a href="#brand-identity-design" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Brand Identity &amp; Design</a></li>
                     </ul>
                 </div>
                 <div>
@@ -251,13 +813,14 @@
                 </div>
             </div>
             <div class="pt-8 border-t border-cyan-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-sm text-gray-500">© 2025 Techgram. All rights reserved.</p>
+                <p class="text-sm text-gray-500">&copy; 2025 Techgram. All rights reserved.</p>
                 <a href="https://techgram.ca" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-cyan-400 transition-colors">Developed by Techgram</a>
             </div>
         </div>
     </footer>
 
     <script>
+        // Nav scroll effect
         var nav = document.getElementById('main-nav');
         function onScroll() {
             if (window.scrollY > 40) {
@@ -267,6 +830,55 @@
             }
         }
         window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Accordion: only one open at a time
+        function toggleService(headerEl) {
+            var serviceItem = headerEl.parentElement;
+            var content = serviceItem.querySelector('.service-content');
+            var isOpen = content.classList.contains('open');
+
+            // Close all
+            document.querySelectorAll('.service-item').forEach(function(item) {
+                item.querySelector('.service-content').classList.remove('open');
+                item.querySelector('.service-header').classList.remove('active');
+            });
+
+            // If it was closed, open it
+            if (!isOpen) {
+                content.classList.add('open');
+                headerEl.classList.add('active');
+                // Smooth scroll to opened service
+                setTimeout(function() {
+                    serviceItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Handle hash navigation (from footer links)
+        function openServiceFromHash() {
+            var hash = window.location.hash;
+            if (hash) {
+                var target = document.querySelector(hash);
+                if (target && target.classList.contains('service-item')) {
+                    var header = target.querySelector('.service-header');
+                    if (header) {
+                        // Close all first
+                        document.querySelectorAll('.service-item').forEach(function(item) {
+                            item.querySelector('.service-content').classList.remove('open');
+                            item.querySelector('.service-header').classList.remove('active');
+                        });
+                        // Open target
+                        target.querySelector('.service-content').classList.add('open');
+                        header.classList.add('active');
+                        setTimeout(function() {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 300);
+                    }
+                }
+            }
+        }
+        window.addEventListener('hashchange', openServiceFromHash);
+        window.addEventListener('load', openServiceFromHash);
     </script>
 
 </body>
