@@ -97,12 +97,12 @@
             <div class="flex flex-col items-center gap-3">
                 <a href="#claim"
                    class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-lg font-bold rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-200 cursor-pointer">
-                    Claim Your Free Website
+                    Check Your Eligibility
                     <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
                 </a>
                 <span class="text-gray-500 text-sm flex items-center gap-1.5">
-                    <i class="ri-time-line text-cyan-500/70"></i>
-                    Takes less than 60 seconds
+                    <i class="ri-shield-check-line text-cyan-500/70"></i>
+                    Simple eligibility check — no commitment required
                 </span>
             </div>
 
@@ -204,7 +204,7 @@
             <!-- Bottom CTA nudge -->
             <div class="mt-14 text-center">
                 <a href="#claim" class="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/45 hover:scale-105 transition-all duration-200">
-                    Claim Your Free Website
+                    Check Your Eligibility
                     <i class="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
@@ -380,10 +380,10 @@
 
             </div>
 
-            <!-- Honest note -->
-            <p class="text-center text-gray-500 text-sm mt-8">
-                <i class="ri-information-line text-cyan-500/60 mr-1"></i>
-                Hosting and maintenance are optional — you're never locked in. Cancel anytime.
+            <!-- Value note -->
+            <p class="text-center text-gray-400 text-sm mt-8">
+                <i class="ri-sparkling-line text-cyan-400 mr-1"></i>
+                Hosting + maintenance combined costs <span class="text-white font-semibold">less than $1 a day</span> — for a fully professional website online 24/7.
             </p>
 
         </div>
@@ -453,13 +453,13 @@
 
             <!-- CTA -->
             <a href="#claim" class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-lg font-bold rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-200 cursor-pointer">
-                Claim Your Free Website Now
+                Check Your Eligibility Now
                 <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
             </a>
 
             <p class="text-gray-500 text-sm mt-5">
                 <i class="ri-lock-line text-cyan-500/60 mr-1"></i>
-                Secure your spot before it's gone — takes less than 60 seconds
+                Secure your spot before it's gone — simple eligibility check, no commitment
             </p>
 
         </div>
@@ -505,10 +505,10 @@
             <!-- Section header -->
             <div class="text-center mb-12">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6">
-                    <i class="ri-send-plane-line text-cyan-400 text-sm"></i>
-                    <span class="text-cyan-400 text-sm font-medium tracking-wide">Takes less than 60 seconds</span>
+                    <i class="ri-medal-line text-cyan-400 text-sm"></i>
+                    <span class="text-cyan-400 text-sm font-medium tracking-wide">Free eligibility check — no commitment</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Claim Your Free Website</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Check Your Eligibility</h2>
                 <p class="text-gray-400 text-lg max-w-xl mx-auto">Fill in the details below and we'll be in touch within 24 hours.</p>
             </div>
 
@@ -611,6 +611,29 @@
                     </div>
                 </div>
 
+                <!-- Business Size -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-3">Business Size <span class="text-cyan-400">*</span></label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10">
+                            <input type="radio" name="business-size" value="small" required class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">Small</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10">
+                            <input type="radio" name="business-size" value="startup" class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">Startup</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10">
+                            <input type="radio" name="business-size" value="medium" class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">Medium</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10">
+                            <input type="radio" name="business-size" value="big" class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">Big</span>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Existing Website -->
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-3">Do you have an existing website? <span class="text-cyan-400">*</span></label>
@@ -642,7 +665,7 @@
                     type="submit"
                     class="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/45 hover:scale-[1.02] transition-all duration-200 cursor-pointer"
                 >
-                    Submit My Claim
+                    Check My Eligibility
                     <i class="ri-send-plane-fill group-hover:translate-x-1 transition-transform"></i>
                 </button>
 
@@ -671,7 +694,7 @@
             <!-- Badge -->
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
                 <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span class="text-cyan-400 text-sm font-medium tracking-wide">Still available — claim yours today</span>
+                <span class="text-cyan-400 text-sm font-medium tracking-wide">Still available — check your eligibility today</span>
             </div>
 
             <!-- Headline -->
@@ -709,13 +732,13 @@
 
             <!-- CTA -->
             <a href="#claim" class="group inline-flex items-center gap-3 px-12 py-5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xl font-bold rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/55 hover:scale-105 transition-all duration-200 cursor-pointer">
-                Get My Free Website
+                Check My Eligibility
                 <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
             </a>
 
             <p class="text-gray-500 text-sm mt-5">
-                <i class="ri-time-line text-cyan-500/60 mr-1"></i>
-                Takes less than 60 seconds to claim
+                <i class="ri-shield-check-line text-cyan-500/60 mr-1"></i>
+                Free eligibility check — no commitment, no credit card
             </p>
 
         </div>
