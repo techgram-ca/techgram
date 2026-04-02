@@ -493,6 +493,170 @@
         })();
     </script>
 
+    <!-- Contact Form -->
+    <section id="claim" class="relative py-24 bg-slate-900/50">
+
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-3xl mx-auto px-6 lg:px-8">
+
+            <!-- Section header -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6">
+                    <i class="ri-send-plane-line text-cyan-400 text-sm"></i>
+                    <span class="text-cyan-400 text-sm font-medium tracking-wide">Takes less than 60 seconds</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Claim Your Free Website</h2>
+                <p class="text-gray-400 text-lg max-w-xl mx-auto">Fill in the details below and we'll be in touch within 24 hours.</p>
+            </div>
+
+            <!-- Form -->
+            <form
+                name="free-website-claim"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                class="p-8 md:p-10 rounded-2xl bg-slate-900/80 border border-cyan-500/15 space-y-6"
+            >
+                <!-- Honeypot -->
+                <input type="hidden" name="form-name" value="free-website-claim">
+                <p class="hidden"><input name="bot-field"></p>
+
+                <!-- Row: Full Name + Business Name -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Full Name <span class="text-cyan-400">*</span></label>
+                        <input
+                            type="text"
+                            name="full-name"
+                            required
+                            placeholder="Jane Smith"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Business Name <span class="text-cyan-400">*</span></label>
+                        <input
+                            type="text"
+                            name="business-name"
+                            required
+                            placeholder="Acme Co."
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                        >
+                    </div>
+                </div>
+
+                <!-- Row: Email + Phone -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email Address <span class="text-cyan-400">*</span></label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            placeholder="jane@example.com"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="+1 (416) 000-0000"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                        >
+                    </div>
+                </div>
+
+                <!-- Row: Business Type + Services Offered -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Business Type <span class="text-cyan-400">*</span></label>
+                        <div class="relative">
+                            <select
+                                name="business-type"
+                                required
+                                class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors appearance-none cursor-pointer"
+                            >
+                                <option value="" disabled selected class="text-gray-500">Select your industry</option>
+                                <option value="retail">Retail / Shop</option>
+                                <option value="restaurant">Restaurant / Cafe / Food</option>
+                                <option value="health">Health & Wellness</option>
+                                <option value="beauty">Beauty / Salon / Spa</option>
+                                <option value="trades">Trades / Contractor</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="real-estate">Real Estate</option>
+                                <option value="fitness">Fitness / Sports</option>
+                                <option value="education">Education / Tutoring</option>
+                                <option value="tech">Tech / Software</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                <i class="ri-arrow-down-s-line text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Services Offered <span class="text-cyan-400">*</span></label>
+                        <input
+                            type="text"
+                            name="services-offered"
+                            required
+                            placeholder="e.g. Haircuts, Plumbing, Coaching"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                        >
+                    </div>
+                </div>
+
+                <!-- Existing Website -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-3">Do you have an existing website? <span class="text-cyan-400">*</span></label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10 flex-1">
+                            <input type="radio" name="existing-website" value="yes" class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">Yes</span>
+                        </label>
+                        <label class="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 cursor-pointer hover:border-cyan-500/50 transition-colors has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-500/10 flex-1">
+                            <input type="radio" name="existing-website" value="no" class="accent-cyan-400">
+                            <span class="text-gray-300 text-sm font-medium">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Message / Requirements -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Message / Requirements</label>
+                    <textarea
+                        name="message"
+                        rows="4"
+                        placeholder="Tell us a bit about your business and what you'd like on your website..."
+                        class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-colors resize-none"
+                    ></textarea>
+                </div>
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/45 hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+                >
+                    Submit My Claim
+                    <i class="ri-send-plane-fill group-hover:translate-x-1 transition-transform"></i>
+                </button>
+
+                <!-- Trust line -->
+                <p class="text-center text-gray-500 text-xs pt-1">
+                    <i class="ri-shield-check-line text-cyan-500/60 mr-1"></i>
+                    Your information is private and will never be shared or sold.
+                </p>
+
+            </form>
+
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-slate-950 border-t border-cyan-500/10">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
