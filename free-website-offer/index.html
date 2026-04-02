@@ -389,6 +389,110 @@
         </div>
     </section>
 
+    <!-- Limited-Time Offer Banner -->
+    <section class="relative py-24 overflow-hidden">
+
+        <!-- Background -->
+        <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/20 via-teal-600/15 to-cyan-600/20"></div>
+        <div class="absolute inset-0 bg-slate-950/60"></div>
+
+        <!-- Animated border top & bottom -->
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+
+        <!-- Background glow -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[800px] h-[300px] bg-cyan-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
+
+            <!-- Urgency badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/15 border border-red-500/40 mb-8">
+                <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                <span class="text-red-400 text-sm font-semibold tracking-wide uppercase">Limited spots available</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+                This Offer Won't Last Long
+            </h2>
+            <p class="text-gray-400 text-lg mb-12 max-w-xl mx-auto">
+                We only take on a small number of free websites each month to ensure every client gets our full attention.
+            </p>
+
+            <!-- Countdown timer -->
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-slate-900 border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                        <span id="countdown-days" class="text-3xl font-extrabold text-white tabular-nums">00</span>
+                    </div>
+                    <span class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Days</span>
+                </div>
+                <span class="text-cyan-500 text-3xl font-bold mb-5">:</span>
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-slate-900 border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                        <span id="countdown-hours" class="text-3xl font-extrabold text-white tabular-nums">00</span>
+                    </div>
+                    <span class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Hours</span>
+                </div>
+                <span class="text-cyan-500 text-3xl font-bold mb-5">:</span>
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-slate-900 border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                        <span id="countdown-mins" class="text-3xl font-extrabold text-white tabular-nums">00</span>
+                    </div>
+                    <span class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Mins</span>
+                </div>
+                <span class="text-cyan-500 text-3xl font-bold mb-5">:</span>
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-slate-900 border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                        <span id="countdown-secs" class="text-3xl font-extrabold text-white tabular-nums">00</span>
+                    </div>
+                    <span class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Secs</span>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <a href="#claim" class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-lg font-bold rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-200 cursor-pointer">
+                Claim Your Free Website Now
+                <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
+            </a>
+
+            <p class="text-gray-500 text-sm mt-5">
+                <i class="ri-lock-line text-cyan-500/60 mr-1"></i>
+                Secure your spot before it's gone — takes less than 60 seconds
+            </p>
+
+        </div>
+    </section>
+
+    <script>
+        // Countdown: rolls to end of current month, resets each month for rolling urgency
+        (function () {
+            function getDeadline() {
+                const now = new Date();
+                return new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
+            }
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+
+            function tick() {
+                const diff = getDeadline() - Date.now();
+                if (diff <= 0) { tick(); return; }
+                const days  = Math.floor(diff / 864e5);
+                const hours = Math.floor((diff % 864e5) / 36e5);
+                const mins  = Math.floor((diff % 36e5) / 6e4);
+                const secs  = Math.floor((diff % 6e4) / 1e3);
+                document.getElementById('countdown-days').textContent  = pad(days);
+                document.getElementById('countdown-hours').textContent = pad(hours);
+                document.getElementById('countdown-mins').textContent  = pad(mins);
+                document.getElementById('countdown-secs').textContent  = pad(secs);
+            }
+
+            tick();
+            setInterval(tick, 1000);
+        })();
+    </script>
+
     <!-- Footer -->
     <footer class="bg-slate-950 border-t border-cyan-500/10">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
