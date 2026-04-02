@@ -57,6 +57,74 @@
         </div>
     </nav>
 
+    <!-- Hero -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+
+        <!-- Background gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+
+        <!-- Glow orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/8 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Grid overlay -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(6,182,212,1) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,1) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+        <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center py-24">
+
+            <!-- Urgency badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="text-cyan-400 text-sm font-medium tracking-wide">Limited-time offer for small businesses</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6 tracking-tight">
+                Get a
+                <span class="relative inline-block">
+                    <span class="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent"> FREE Website</span>
+                </span>
+                <br>
+                <span class="text-4xl md:text-5xl lg:text-6xl text-gray-200 font-bold">(Worth $1,999–$2,999)</span>
+            </h1>
+
+            <!-- Subheadline -->
+            <p class="text-xl md:text-2xl text-gray-400 font-medium mb-10">
+                No catches. No hidden charges.
+            </p>
+
+            <!-- CTA -->
+            <div class="flex flex-col items-center gap-3">
+                <a href="#claim"
+                   class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-lg font-bold rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-200 cursor-pointer">
+                    Claim Your Free Website
+                    <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <span class="text-gray-500 text-sm flex items-center gap-1.5">
+                    <i class="ri-time-line text-cyan-500/70"></i>
+                    Takes less than 60 seconds
+                </span>
+            </div>
+
+            <!-- Trust signals -->
+            <div class="mt-16 flex flex-wrap justify-center gap-6">
+                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                    <i class="ri-shield-check-line text-cyan-400 text-lg"></i>
+                    No credit card required
+                </div>
+                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                    <i class="ri-medal-line text-cyan-400 text-lg"></i>
+                    Professional quality, guaranteed
+                </div>
+                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                    <i class="ri-customer-service-2-line text-cyan-400 text-lg"></i>
+                    Dedicated support included
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-slate-950 border-t border-cyan-500/10">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
