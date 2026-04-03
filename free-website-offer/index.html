@@ -46,13 +46,21 @@
                     <span class="text-xl font-bold text-white">Techgram</span>
                 </a>
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="/#services" class="text-sm font-medium transition-colors whitespace-nowrap text-cyan-400">Services</a>
-                    <a href="/#about" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">About</a>
-                    <a href="/#solutions" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Solutions</a>
-                    <a href="/#contact" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Contact</a>
-                    <a href="/#contact" class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all whitespace-nowrap cursor-pointer">Get Started</a>
+                    <a href="#what-you-get" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">What You Get</a>
+                    <a href="#why-free" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Why Free</a>
+                    <a href="#pricing" class="text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-cyan-400">Pricing</a>
+                    <a href="#claim" class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all whitespace-nowrap cursor-pointer">Check Eligibility</a>
                 </div>
-                <button class="md:hidden w-10 h-10 flex items-center justify-center cursor-pointer text-white"><i class="ri-menu-line text-2xl"></i></button>
+                <button id="fw-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center cursor-pointer text-white"><i class="ri-menu-line text-2xl"></i></button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="fw-mobile-menu" class="hidden md:hidden bg-slate-950 border-t border-cyan-500/10">
+            <div class="flex flex-col px-6 py-6 gap-5">
+                <a href="#what-you-get" class="text-gray-300 hover:text-cyan-400 text-sm font-medium transition-colors">What You Get</a>
+                <a href="#why-free" class="text-gray-300 hover:text-cyan-400 text-sm font-medium transition-colors">Why Free</a>
+                <a href="#pricing" class="text-gray-300 hover:text-cyan-400 text-sm font-medium transition-colors">Pricing</a>
+                <a href="#claim" class="w-full text-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">Check Eligibility</a>
             </div>
         </div>
     </nav>
@@ -126,7 +134,7 @@
     </section>
 
     <!-- What You Get -->
-    <section class="relative py-24 bg-slate-950">
+    <section id="what-you-get" class="relative py-24 bg-slate-950">
 
         <div class="absolute inset-0 opacity-[0.025]" style="background-image: linear-gradient(rgba(6,182,212,1) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,1) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
@@ -213,7 +221,7 @@
     </section>
 
     <!-- Why We're Offering This for Free -->
-    <section class="relative py-24 bg-slate-900/50">
+    <section id="why-free" class="relative py-24 bg-slate-900/50">
 
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-teal-500/5 rounded-full blur-3xl"></div>
@@ -291,7 +299,7 @@
     </section>
 
     <!-- Transparent Pricing -->
-    <section class="relative py-24 bg-slate-950">
+    <section id="pricing" class="relative py-24 bg-slate-950">
 
         <div class="absolute inset-0 opacity-[0.025]" style="background-image: linear-gradient(rgba(6,182,212,1) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,1) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
@@ -863,6 +871,26 @@
         </div>
     </footer>
 
+
+<script>
+    // Mobile menu toggle
+    (function () {
+        var btn = document.getElementById('fw-menu-btn');
+        var menu = document.getElementById('fw-mobile-menu');
+        var icon = btn.querySelector('i');
+        btn.addEventListener('click', function () {
+            menu.classList.toggle('hidden');
+            icon.className = menu.classList.contains('hidden') ? 'ri-menu-line text-2xl' : 'ri-close-line text-2xl';
+        });
+        // Close menu when a link is clicked
+        menu.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () {
+                menu.classList.add('hidden');
+                icon.className = 'ri-menu-line text-2xl';
+            });
+        });
+    })();
+</script>
 
 <script id="smoot-scroll">
 // Transparent nav — becomes solid on scroll
