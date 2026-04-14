@@ -27,6 +27,8 @@
     <meta name="twitter:image" content="https://techgram.ca/assets/og-image.jpg">
 
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>window.recaptchaSiteKey = '6Le5ZLYsAAAAAJn_uv__GY65ookmTZkrAUwOZiWr';</script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Le5ZLYsAAAAAJn_uv__GY65ookmTZkrAUwOZiWr" async defer></script>
     <script src="assets/js/custom.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -696,19 +698,26 @@
                     const existingWebsiteRadio = form.querySelector('input[name="existing-website"]:checked');
                     const businessSizeRadio = form.querySelector('input[name="business-size"]:checked');
 
-                    const payload = {
-                        full_name:        form.querySelector('[name="full-name"]').value.trim(),
-                        business_name:    form.querySelector('[name="business-name"]').value.trim(),
-                        email:            form.querySelector('[name="email"]').value.trim(),
-                        phone:            form.querySelector('[name="phone"]').value.trim(),
-                        business_type:    form.querySelector('[name="business-type"]').value,
-                        services_offered: form.querySelector('[name="services-offered"]').value.trim(),
-                        business_size:    businessSizeRadio ? businessSizeRadio.value : '',
-                        existing_website: existingWebsiteRadio ? existingWebsiteRadio.value : '',
-                        message:          form.querySelector('[name="message"]').value.trim()
-                    };
-
                     try {
+                        const token = await new Promise((resolve, reject) => {
+                            grecaptcha.ready(() => {
+                                grecaptcha.execute(window.recaptchaSiteKey, { action: 'free_website' }).then(resolve).catch(reject);
+                            });
+                        });
+
+                        const payload = {
+                            full_name:        form.querySelector('[name="full-name"]').value.trim(),
+                            business_name:    form.querySelector('[name="business-name"]').value.trim(),
+                            email:            form.querySelector('[name="email"]').value.trim(),
+                            phone:            form.querySelector('[name="phone"]').value.trim(),
+                            business_type:    form.querySelector('[name="business-type"]').value,
+                            services_offered: form.querySelector('[name="services-offered"]').value.trim(),
+                            business_size:    businessSizeRadio ? businessSizeRadio.value : '',
+                            existing_website: existingWebsiteRadio ? existingWebsiteRadio.value : '',
+                            message:          form.querySelector('[name="message"]').value.trim(),
+                            recaptcha_token:  token
+                        };
+
                         const res = await fetch('/api/free-website', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

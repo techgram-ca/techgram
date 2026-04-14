@@ -1,22 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const formMessage = document.getElementById('form-message');
-	
+
 	  document.getElementById("contact-form").addEventListener("submit", async (e) => {
 	  e.preventDefault();
-	  
+
 	  const form = e.target;
 	  const submitBtn = form.querySelector('button[type="submit"]');
 	  submitBtn.textContent = 'Sending...';
 	  submitBtn.disabled = true;
-  
-	  const payload = {
-		name: document.getElementById("name").value.trim(),
-		business_name: document.getElementById("business").value.trim(),
-		email: document.getElementById("email").value.trim(),
-		message: document.getElementById("message").value.trim()
-	  };
 
 	  try {
+		const token = await new Promise((resolve, reject) => {
+		  grecaptcha.ready(() => {
+			grecaptcha.execute(window.recaptchaSiteKey, { action: 'contact' }).then(resolve).catch(reject);
+		  });
+		});
+
+		const payload = {
+		  name: document.getElementById("name").value.trim(),
+		  business_name: document.getElementById("business").value.trim(),
+		  email: document.getElementById("email").value.trim(),
+		  message: document.getElementById("message").value.trim(),
+		  recaptcha_token: token
+		};
+
 		const res = await fetch("/api/contact", {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
@@ -25,12 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		if (!res.ok) throw new Error();
 
-		showContactMessage("Thanks! We’ll contact you soon.", true);
+		showContactMessage("Thanks! We'll contact you soon.", true);
 	  } catch (err) {
 		showContactMessage("Something went wrong. Please try again.", false);
 	  } finally {
 		// Clear the form whether the submission succeeded or failed
-		try { 
+		try {
 			form.reset();
 			submitBtn.textContent = 'Start My Project';
 		} catch (e) {}
@@ -58,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		  menuBtn.addEventListener("click", () => {
 			mobileMenu.classList.toggle("hidden");
 		  });
-		  
+
 		  //hide mobile menu on click
 		  document.querySelectorAll("#mobile-menu a").forEach(link => {
 		  link.addEventListener("click", () => {
@@ -66,4 +73,4 @@ document.addEventListener("DOMContentLoaded", () => {
 		  });
 		});
 	});
-	
+
