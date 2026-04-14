@@ -11,7 +11,19 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { name, business_name, email, message } = req.body;
+  const { name, business_name, email, message, recaptcha_token } = req.body;
+
+  // Verify reCAPTCHA token
+  if (!recaptcha_token)
+    return res.status(400).json({ error: "Missing reCAPTCHA token" });
+
+  const verifyRes = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptcha_token}`,
+    { method: "POST" }
+  );
+  const verifyData = await verifyRes.json();
+  if (!verifyData.success || verifyData.score < 0.5)
+    return res.status(400).json({ error: "reCAPTCHA verification failed" });
 
   // Basic validation
   if (!name || !email || !message)

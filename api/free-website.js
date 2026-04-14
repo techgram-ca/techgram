@@ -20,8 +20,21 @@ export default async function handler(req, res) {
     services_offered,
     business_size,
     existing_website,
-    message
+    message,
+    recaptcha_token
   } = req.body;
+
+  // Verify reCAPTCHA token
+  if (!recaptcha_token)
+    return res.status(400).json({ error: "Missing reCAPTCHA token" });
+
+  const verifyRes = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptcha_token}`,
+    { method: "POST" }
+  );
+  const verifyData = await verifyRes.json();
+  if (!verifyData.success || verifyData.score < 0.5)
+    return res.status(400).json({ error: "reCAPTCHA verification failed" });
 
   // Basic validation
   if (!full_name || !business_name || !email || !business_type || !services_offered || !business_size)
