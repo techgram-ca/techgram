@@ -98,7 +98,16 @@ function validatePharmacy(body, { partial = false } = {}) {
   return { value: out };
 }
 
+// Simple admin gate (activates only when ADMIN_ACCESS_KEY is set).
+function adminAllowed(req) {
+  const required = process.env.ADMIN_ACCESS_KEY;
+  if (!required) return true; // not configured → non-breaking (flagged in UI)
+  const provided = req.headers["x-admin-key"] || req.query.admin_key;
+  return provided === required;
+}
+
 export default async function handler(req, res) {
+  if (!adminAllowed(req)) return res.status(401).json({ error: "Unauthorized" });
   try {
     switch (req.method) {
       case "GET": {

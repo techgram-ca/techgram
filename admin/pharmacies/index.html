@@ -163,10 +163,27 @@
             return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
+        // Sends x-admin-key if the operator has set one; on 401 it prompts once
+        // and retries. No-op when the API has no ADMIN_ACCESS_KEY configured.
+        async function adminFetch(url, opts = {}) {
+            const withKey = () => {
+                const key = sessionStorage.getItem('adminKey');
+                const headers = { ...(opts.headers || {}) };
+                if (key) headers['x-admin-key'] = key;
+                return { ...opts, headers };
+            };
+            let res = await fetch(url, withKey());
+            if (res.status === 401) {
+                const key = prompt('Admin access key:');
+                if (key) { sessionStorage.setItem('adminKey', key); res = await fetch(url, withKey()); }
+            }
+            return res;
+        }
+
         async function loadList() {
             listStatus.textContent = 'Loading…';
             try {
-                const res = await fetch('/api/pharmacies');
+                const res = await adminFetch('/api/pharmacies');
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Failed to load');
                 render(data.pharmacies || []);
@@ -267,7 +284,7 @@
                 const id = delBtn.getAttribute('data-del');
                 const name = delBtn.getAttribute('data-name');
                 if (!confirm(`Delete "${name}"? This removes its pricing config.`)) return;
-                const res = await fetch(`/api/pharmacies?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+                const res = await adminFetch(`/api/pharmacies?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
                 if (res.ok) loadList();
                 else alert('Failed to delete.');
             }
@@ -302,7 +319,7 @@
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving…';
             try {
-                const res = await fetch(id ? `/api/pharmacies?id=${encodeURIComponent(id)}` : '/api/pharmacies', {
+                const res = await adminFetch(id ? `/api/pharmacies?id=${encodeURIComponent(id)}` : '/api/pharmacies', {
                     method: id ? 'PUT' : 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
