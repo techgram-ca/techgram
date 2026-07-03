@@ -110,12 +110,22 @@
                                 <th class="text-right font-semibold px-4 py-3">Rows</th>
                                 <th class="text-right font-semibold px-4 py-3">Deliveries</th>
                                 <th class="text-right font-semibold px-4 py-3">Pick-ups</th>
+                                <th class="text-center font-semibold px-4 py-3">Status</th>
                                 <th class="px-4 py-3"></th>
                             </tr>
                         </thead>
                         <tbody id="file-rows" class="divide-y divide-cyan-500/5"></tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Invoice summary -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-white">Invoice summary</h2>
+                    <div id="invoice-grand" class="text-sm text-gray-400"></div>
+                </div>
+                <div id="invoice-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
         </div>
     </main>
@@ -240,6 +250,9 @@
             document.getElementById('flags').innerHTML = flags.join('');
 
             // Files
+            const statusFlag = (p) => p.needsCalc > 0
+                ? `<span title="${p.needsCalc} row(s) need manual calculation" class="inline-flex items-center gap-1 text-red-400"><i class="ri-error-warning-fill"></i> ${p.needsCalc}</span>`
+                : `<span title="All deliveries priced" class="text-emerald-400"><i class="ri-checkbox-circle-fill"></i></span>`;
             document.getElementById('file-rows').innerHTML = summary.perPharmacy.map((p, i) => `
                 <tr class="hover:bg-slate-900/40">
                     <td class="px-4 py-3 text-white font-medium">${escapeHtml(p.name)}</td>
@@ -247,13 +260,63 @@
                     <td class="px-4 py-3 text-right text-gray-300 tabular-nums">${p.rows}</td>
                     <td class="px-4 py-3 text-right text-gray-400 tabular-nums">${p.deliveries}</td>
                     <td class="px-4 py-3 text-right text-gray-400 tabular-nums">${p.pickups}</td>
+                    <td class="px-4 py-3 text-center">${statusFlag(p)}</td>
                     <td class="px-4 py-3 text-right">
                         <button data-dl="${i}" class="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 font-medium"><i class="ri-download-line"></i> Download</button>
                     </td>
-                </tr>`).join('') || `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No rows matched any pharmacy.</td></tr>`;
+                </tr>`).join('') || `<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">No rows matched any pharmacy.</td></tr>`;
+
+            renderInvoice(summary.perPharmacy);
 
             resultsEl.classList.remove('hidden');
             resultsEl.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderInvoice(perPharmacy) {
+            const money = (n) => '$' + Number(n).toFixed(2);
+            let grand = 0;
+            let allFinal = true;
+            const cards = perPharmacy.map((p) => {
+                grand += p.total || 0;
+                if (!p.final) allFinal = false;
+                const badge = p.final
+                    ? `<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 rounded-full px-2.5 py-1"><i class="ri-checkbox-circle-fill"></i> Final</span>`
+                    : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-red-400 border border-red-500/30 bg-red-500/10 rounded-full px-2.5 py-1"><i class="ri-error-warning-fill"></i> Manual step needed</span>`;
+                const lines = (p.breakdown || []).length
+                    ? p.breakdown.map((b) =>
+                        `<div class="flex justify-between text-sm text-gray-300 tabular-nums">
+                            <span class="text-gray-500">${money(b.rate)} × ${b.count}</span>
+                            <span>${money(b.subtotal)}</span>
+                        </div>`).join('')
+                    : `<div class="text-sm text-gray-600">No priced deliveries.</div>`;
+                const nc = p.needsCalc > 0
+                    ? `<div class="flex justify-between text-sm text-red-400/90 tabular-nums mt-1">
+                            <span>Need to Calculate × ${p.needsCalc}</span><span>—</span></div>`
+                    : '';
+                return `
+                <div class="rounded-xl border ${p.final ? 'border-cyan-500/10' : 'border-red-500/20'} bg-slate-900/40 p-5">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="text-white font-semibold">${escapeHtml(p.name)}</div>
+                            <div class="text-gray-600 text-xs font-mono">Order_ID ${escapeHtml(p.order_id)}</div>
+                        </div>
+                        ${badge}
+                    </div>
+                    <div class="space-y-1 border-t border-cyan-500/10 pt-3">
+                        ${lines}
+                        ${nc}
+                    </div>
+                    <div class="flex justify-between items-center border-t border-cyan-500/10 mt-3 pt-3">
+                        <span class="text-gray-400 text-sm font-medium">Pharmacy total</span>
+                        <span class="text-white font-bold tabular-nums">${money(p.total || 0)}</span>
+                    </div>
+                </div>`;
+            }).join('');
+            document.getElementById('invoice-cards').innerHTML = cards
+                || `<div class="text-gray-500 text-sm">No pharmacies to invoice.</div>`;
+            document.getElementById('invoice-grand').innerHTML =
+                `<span class="${allFinal ? 'text-emerald-400' : 'text-red-400'}">${allFinal ? 'All final' : 'Some need manual step'}</span>
+                 &nbsp;·&nbsp; Grand total (priced): <span class="text-white font-bold tabular-nums">${money(grand)}</span>`;
         }
 
         function downloadFile(f) {

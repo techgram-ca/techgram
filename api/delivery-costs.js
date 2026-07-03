@@ -30,17 +30,23 @@ const OUTPUT_COLUMNS = [
   "Task_Type",
   "Agent_ID",
   "Agent_Name",
-  "Pick_up_From",
+  "Pick_up_From",       // canonical pharmacy name, sourced from DB by Order_ID
+  "Pharmacy_Address",   // canonical pharmacy address, sourced from DB by Order_ID
   "Customer_Name",
   "Customer_Address",
-  "Latitude",
-  "Longitude",
   "Customer_Phone",
   "Complete_Before",
   "Completion_Time",
   "Task_Status",
 ];
 const COST_COLUMN = "Cost";
+
+// Columns whose values come from the matched pharmacy record (DB), not the
+// uploaded sheet — this removes name/address discrepancies in the raw export.
+const PHARMACY_SOURCED = {
+  Pick_up_From: (p) => p.name,
+  Pharmacy_Address: (p) => p.address,
+};
 
 // Placeholder written to the Cost cell for Delivery rows whose city has no flat
 // rate in the pharmacy's city_rates. (Distance-based calculation is disabled
@@ -148,9 +154,11 @@ function round2(n) {
   return Math.round((n + Number.EPSILON) * 100) / 100;
 }
 
-function projectRow(row, cost) {
+function projectRow(row, cost, pharmacy) {
   const out = {};
-  for (const col of OUTPUT_COLUMNS) out[col] = row[col] ?? "";
+  for (const col of OUTPUT_COLUMNS) {
+    out[col] = PHARMACY_SOURCED[col] ? PHARMACY_SOURCED[col](pharmacy) : row[col] ?? "";
+  }
   out[COST_COLUMN] = cost === null || cost === undefined ? "" : cost;
   return out;
 }
@@ -281,18 +289,46 @@ export function processRows(rows, pharmacies) {
       }
     }
 
-    bucket.rows.push(projectRow(row, cost));
+    bucket.rows.push(projectRow(row, cost, pharmacy));
   }
 
   return { buckets, summary };
 }
 
+// Label column for the trailing TOTAL row (the data column just before Cost).
+const TOTAL_LABEL_COLUMN = OUTPUT_COLUMNS[OUTPUT_COLUMNS.length - 1];
+
 // Build one output file per pharmacy, entirely in memory. Mutates summary
-// with the per-pharmacy breakdown. Returns [{ filename, mimeType, base64, … }].
+// with the per-pharmacy breakdown + invoice. Returns
+// [{ filename, mimeType, base64, … }].
 export function buildFiles(buckets, summary, fmt) {
   const files = [];
   for (const { pharmacy, rows: outRows } of buckets.values()) {
-    const ws = XLSX.utils.json_to_sheet(outRows, {
+    // --- Invoice breakdown: group priced deliveries by rate (rate × count) ---
+    const groups = new Map(); // rate -> count
+    let needsCalc = 0;
+    for (const r of outRows) {
+      const c = r[COST_COLUMN];
+      if (c === NEEDS_CALC) needsCalc++;
+      else if (typeof c === "number") groups.set(c, (groups.get(c) || 0) + 1);
+    }
+    const breakdown = [...groups.entries()]
+      .map(([rate, count]) => ({ rate, count, subtotal: round2(rate * count) }))
+      .sort((a, b) => a.rate - b.rate);
+    const total = round2(breakdown.reduce((s, b) => s + b.subtotal, 0));
+
+    const deliveries = outRows.filter(
+      (r) => String(r.Task_Type).trim().toLowerCase() === "delivery"
+    ).length;
+
+    // --- Append a TOTAL row (sum of Cost, excluding "Need to Calculate") ---
+    const totalRow = {};
+    for (const col of OUTPUT_COLUMNS) totalRow[col] = "";
+    totalRow[TOTAL_LABEL_COLUMN] = "TOTAL";
+    totalRow[COST_COLUMN] = total;
+    const sheetRows = [...outRows, totalRow];
+
+    const ws = XLSX.utils.json_to_sheet(sheetRows, {
       header: [...OUTPUT_COLUMNS, COST_COLUMN],
     });
     let base64, mimeType;
@@ -307,10 +343,6 @@ export function buildFiles(buckets, summary, fmt) {
       mimeType = "text/csv";
     }
 
-    const deliveries = outRows.filter(
-      (r) => String(r.Task_Type).trim().toLowerCase() === "delivery"
-    ).length;
-
     files.push({
       filename: `${pharmacy.file_name}.${fmt}`,
       mimeType,
@@ -318,6 +350,7 @@ export function buildFiles(buckets, summary, fmt) {
       rows: outRows.length,
       deliveries,
       pickups: outRows.length - deliveries,
+      needsCalc,
     });
 
     summary.perPharmacy.push({
@@ -327,6 +360,10 @@ export function buildFiles(buckets, summary, fmt) {
       rows: outRows.length,
       deliveries,
       pickups: outRows.length - deliveries,
+      needsCalc,
+      final: needsCalc === 0,   // true = fully priced, false = manual step needed
+      breakdown,                // [{ rate, count, subtotal }]
+      total,                    // sum of priced deliveries (excludes Need to Calculate)
     });
   }
 
