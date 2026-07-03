@@ -94,16 +94,34 @@ export function matchPharmacy(pharmacies, orderId) {
   return { pharmacy: null, source: "unmatched" };
 }
 
-// --- City resolution (section 6) ------------------------------------------
+// --- City resolution ------------------------------------------------------
 const PROVINCE_PATTERN =
   /^(Ontario|ON|Quebec|QC|British Columbia|BC|Alberta|AB|Manitoba|MB|Saskatchewan|SK|Nova Scotia|NS|New Brunswick|NB|Newfoundland(?: and Labrador)?|NL|Prince Edward Island|PE|Northwest Territories|NT|Yukon|YT|Nunavut|NU)\b/i;
+
+// Upper-tier regional municipalities / counties that dispatch addresses often
+// insert between the city and the province, e.g.
+// "1616 Haig Boulevard, Mississauga, Peel, Ontario, Canada". When one of these
+// is the token before the province, the real city is one token further back.
+const REGION_TOKENS = new Set([
+  "peel", "york", "halton", "durham", "niagara", "waterloo",
+  "simcoe", "muskoka", "golden horseshoe",
+]);
+
+function isRegionToken(t) {
+  const s = t.trim().toLowerCase();
+  return REGION_TOKENS.has(s) || /\bregion\b/.test(s) || /\bcounty\b/.test(s);
+}
 
 export function parseCityFromAddress(address) {
   if (!address) return null;
   const tokens = String(address).split(",").map((t) => t.trim()).filter(Boolean);
   const provinceIndex = tokens.findIndex((t) => PROVINCE_PATTERN.test(t));
   if (provinceIndex <= 0) return null;
-  const candidate = tokens[provinceIndex - 1];
+  // Walk back from the province, skipping regional-municipality tokens, to reach
+  // the actual city.
+  let i = provinceIndex - 1;
+  while (i >= 0 && isRegionToken(tokens[i])) i--;
+  const candidate = tokens[i];
   if (!candidate || /^\d+\s/.test(candidate)) return null; // guards against picking up a street
   return candidate;
 }
