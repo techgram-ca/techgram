@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <!-- Flags: warnings, discards detail, unmatched, unresolved -->
+            <!-- Flags: warnings, discards detail, unmatched, need-to-calculate -->
             <div id="flags" class="space-y-3"></div>
 
             <!-- Per-pharmacy files -->
@@ -230,11 +230,11 @@
                     <strong>${summary.unmatched.count} rows had an Order_ID matching no pharmacy</strong> — not written to any sheet.
                     <div class="mt-1 text-red-400/80 text-xs font-mono">Order_IDs: ${ids}</div></div>`);
             }
-            if (summary.unresolvedCost.count > 0) {
-                const sample = summary.unresolvedCost.sample.map((s) =>
+            if (summary.needsCalculation.count > 0) {
+                const sample = summary.needsCalculation.sample.map((s) =>
                     `<li class="text-xs text-amber-400/80">${escapeHtml(s.pharmacy)} · ${escapeHtml(s.address)} <span class="text-gray-600">(${escapeHtml(s.reason)})</span></li>`).join('');
                 flags.push(`<div class="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
-                    <strong>${summary.unresolvedCost.count} delivery rows could not be priced</strong> — left blank in the sheet, not defaulted to 0.
+                    <strong>${summary.needsCalculation.count} delivery rows have no city flat rate</strong> — marked <code class="text-amber-200">Need to Calculate</code> in the sheet, not defaulted to 0.
                     <ul class="mt-2 space-y-1 list-disc list-inside">${sample}</ul></div>`);
             }
             document.getElementById('flags').innerHTML = flags.join('');

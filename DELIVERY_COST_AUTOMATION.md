@@ -28,11 +28,8 @@ pricing config (the `pharmacies` table) — no customer data.
    - paste `supabase/migrations/20260703000000_create_pharmacies.sql` into the SQL editor.
 2. **Install deps**: `npm install` (adds `xlsx` for CSV/XLSX parsing + writing).
 3. **Environment variables** (in addition to the existing `SUPABASE_URL` / `SUPABASE_SECRET_KEY`):
-   - `GOOGLE_MAPS_API_KEY` — **required.** Used for the Distance Matrix API
-     (per-km pricing) and the Geocoding API (city-resolution fallback). If it
-     is not set, city-flat-rate pricing still works, but any row needing
-     distance/geocoding is surfaced as **unresolved** (never defaulted to 0),
-     and a warning is shown in the summary.
+   - No Google Maps key is needed right now — distance-based pricing is
+     disabled. Pricing uses the pharmacy's city flat rates only.
    - `ADMIN_ACCESS_KEY` — *optional but recommended.* When set, the admin API
      routes (`/api/pharmacies`, `/api/delivery-costs`) require an
      `x-admin-key` header matching it; the admin pages prompt for the key and
@@ -44,16 +41,13 @@ pricing config (the `pharmacies` table) — no customer data.
 
 1. Only `Task_Type = Delivery` rows are priced. `Pick-up` rows are kept in the
    sheet with a blank `Cost`.
-2. Resolve the delivery city from `Customer_Address` (parse first, then reverse
-   geocode via lat/lng). Normalized (lowercase/trim) lookup in the pharmacy's
-   `city_rates` → flat rate.
-3. If the city isn't in `city_rates`, call Distance Matrix
-   (pharmacy lat/lng → row lat/lng) and `cost = driving_km * per_km_rate`.
-   The sheet's `Distance(KM)` column is **not** used.
-4. If neither resolves, `Cost` is left blank and the row is listed under
-   "unresolved" in the summary.
-Distance Matrix and geocode results are cached in memory per request
-(keyed by pharmacy + rounded lat/lng); the cache is never persisted.
+2. Resolve the delivery city by parsing `Customer_Address`. Normalized
+   (lowercase/trim) lookup in the pharmacy's `city_rates` → flat rate.
+3. If the city has no flat rate (city not resolved, or not a key in
+   `city_rates`), `Cost` is set to the literal **`Need to Calculate`** — never
+   0 — and the row is counted under "Need to Calculate" in the summary.
+   Distance-based pricing is disabled for now; the sheet's `Distance(KM)`
+   column is not used, and no external APIs are called.
 
 ## Row inclusion
 
@@ -67,11 +61,11 @@ Distance Matrix and geocode results are cached in memory per request
 
 These were defaulted because the spec left them open; each is easy to change:
 
-- **Output columns** (spec §7 said you'd specify separately). Current set is the
-  single `OUTPUT_COLUMNS` array at the top of `api/delivery-costs.js`
-  (`Order_ID, Task_Type, Agent_Name, Pick_up_From, Customer_Name,
-  Customer_Address, Customer_Phone, Task_Status, Completion_Time, Latitude,
-  Longitude` + appended `Cost`). Edit that one array to change every sheet.
+- **Output columns**: the single `OUTPUT_COLUMNS` array at the top of
+  `api/delivery-costs.js` (`Merge_ID, Task_ID, Order_ID, Task_Type, Agent_ID,
+  Agent_Name, Pick_up_From, Customer_Name, Customer_Address, Latitude,
+  Longitude, Customer_Phone, Complete_Before, Completion_Time, Task_Status` +
+  appended `Cost`). Edit that one array to change every sheet.
 - **Unknown/blank status** (spec §4.3 said to ask): defaulted to *discard +
   surface in summary*. To instead apply the agent check, adjust the `else`
   branch in `processRows`.
@@ -86,4 +80,4 @@ These were defaulted because the spec left them open; each is easy to change:
 `{ summary, files }`. `files[i]` = `{ filename, mimeType, base64, rows,
 deliveries, pickups }`, one per pharmacy, named `<file_name>.<csv|xlsx>` from
 the pharmacy config. The summary reports total/kept/discarded (with reasons),
-unmatched `Order_ID`s, and unresolved-cost rows — nothing is silently dropped.
+unmatched `Order_ID`s, and `Need to Calculate` rows — nothing is silently dropped.
