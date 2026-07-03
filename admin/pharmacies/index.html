@@ -75,7 +75,7 @@
                 </div>
 
                 <form id="pharmacy-form" class="p-6 space-y-5" novalidate>
-                    <input type="hidden" name="id">
+                    <input type="hidden" name="pharmacy_id">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
@@ -158,6 +158,11 @@
         const form = document.getElementById('pharmacy-form');
         const ratesList = document.getElementById('rates-list');
         const formError = document.getElementById('form-error');
+
+        // Collision-proof field access. `form.id` / `form.name` return the form
+        // element's own id/name attributes, NOT the controls — always go through
+        // form.elements so every field (including the hidden id) resolves to its input.
+        const el = (name) => form.elements.namedItem(name);
 
         function escapeHtml(s) {
             return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -250,19 +255,21 @@
             form.reset();
             ratesList.innerHTML = '';
             formError.classList.add('hidden');
+            // Always set the hidden id explicitly (empty for New) — never rely on
+            // form.reset() to clear it, so "New" can never inherit an edited id.
+            el('pharmacy_id').value = pharmacy ? pharmacy.id : '';
             document.getElementById('modal-title').textContent = pharmacy ? 'Edit Pharmacy' : 'New Pharmacy';
             if (pharmacy) {
-                form.id.value = pharmacy.id;
                 for (const k of ['name', 'order_id', 'file_name', 'address', 'city', 'latitude', 'longitude', 'per_km_rate']) {
-                    if (form[k]) form[k].value = pharmacy[k] ?? '';
+                    if (el(k)) el(k).value = pharmacy[k] ?? '';
                 }
-                form.is_active.checked = pharmacy.is_active !== false;
+                el('is_active').checked = pharmacy.is_active !== false;
                 const rates = pharmacy.city_rates || {};
                 Object.keys(rates).length
                     ? Object.entries(rates).forEach(([c, r]) => addRateRow(c, r))
                     : addRateRow();
             } else {
-                form.is_active.checked = true;
+                el('is_active').checked = true;
                 addRateRow();
             }
             modal.classList.remove('hidden');
@@ -298,15 +305,15 @@
             let payload;
             try {
                 payload = {
-                    name: form.name.value.trim(),
-                    file_name: form.file_name.value.trim(),
-                    order_id: Number(form.order_id.value),
-                    address: form.address.value.trim(),
-                    city: form.city.value.trim(),
-                    latitude: Number(form.latitude.value),
-                    longitude: Number(form.longitude.value),
-                    per_km_rate: Number(form.per_km_rate.value),
-                    is_active: form.is_active.checked,
+                    name: el('name').value.trim(),
+                    file_name: el('file_name').value.trim(),
+                    order_id: Number(el('order_id').value),
+                    address: el('address').value.trim(),
+                    city: el('city').value.trim(),
+                    latitude: Number(el('latitude').value),
+                    longitude: Number(el('longitude').value),
+                    per_km_rate: Number(el('per_km_rate').value),
+                    is_active: el('is_active').checked,
                     city_rates: collectRates(),
                 };
             } catch (err) {
@@ -315,7 +322,7 @@
                 return;
             }
 
-            const id = form.id.value;
+            const id = el('pharmacy_id').value;
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving…';
             try {
