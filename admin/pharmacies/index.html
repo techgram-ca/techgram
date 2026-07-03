@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacies · Admin | Techgram</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <style>body { font-family: Inter, sans-serif; }</style>
+</head>
+
+<body class="bg-slate-950 text-gray-200 min-h-screen">
+
+    <!-- Nav -->
+    <nav class="border-b border-cyan-500/10 bg-slate-950/95">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-500"><i class="ri-code-s-slash-line text-lg text-white"></i></div>
+                <span class="text-lg font-bold text-white">Techgram</span>
+                <span class="text-xs font-medium text-cyan-400/70 border border-cyan-500/20 rounded px-2 py-0.5 ml-1">Admin</span>
+            </a>
+            <div class="flex items-center gap-6 text-sm">
+                <a href="/admin/pharmacies" class="text-cyan-400 font-medium">Pharmacies</a>
+                <a href="/admin/delivery-costs" class="text-gray-400 hover:text-cyan-400 transition-colors">Delivery Costs</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 lg:px-8 py-10">
+
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-extrabold text-white">Pharmacies</h1>
+                <p class="text-gray-500 text-sm mt-1">Pricing configuration for delivery-cost automation. No customer data is stored here.</p>
+            </div>
+            <button id="new-btn" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/40 transition-all">
+                <i class="ri-add-line"></i> New Pharmacy
+            </button>
+        </div>
+
+        <div id="list-status" class="text-gray-500 text-sm mb-4">Loading…</div>
+
+        <div class="overflow-x-auto rounded-xl border border-cyan-500/10">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-900/70 text-gray-400 text-xs uppercase tracking-wide">
+                    <tr>
+                        <th class="text-left font-semibold px-4 py-3">Name</th>
+                        <th class="text-left font-semibold px-4 py-3">Order ID</th>
+                        <th class="text-left font-semibold px-4 py-3">File name</th>
+                        <th class="text-left font-semibold px-4 py-3">City</th>
+                        <th class="text-left font-semibold px-4 py-3">City rates</th>
+                        <th class="text-left font-semibold px-4 py-3">$/km</th>
+                        <th class="text-left font-semibold px-4 py-3">Active</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody id="rows" class="divide-y divide-cyan-500/5"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto">
+        <div class="min-h-screen flex items-start justify-center p-4 py-10">
+            <div class="w-full max-w-2xl bg-slate-950 border border-cyan-500/20 rounded-2xl shadow-2xl">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-cyan-500/10">
+                    <h2 id="modal-title" class="text-lg font-bold text-white">New Pharmacy</h2>
+                    <button id="modal-close" class="text-gray-500 hover:text-white transition-colors"><i class="ri-close-line text-2xl"></i></button>
+                </div>
+
+                <form id="pharmacy-form" class="p-6 space-y-5" novalidate>
+                    <input type="hidden" name="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Name <span class="text-cyan-400">*</span></label>
+                            <input name="name" required placeholder="SelectHealth Pharmacy" class="fld">
+                            <p class="text-gray-600 text-xs mt-1">Canonical name used to label output sheets.</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Order ID <span class="text-cyan-400">*</span></label>
+                            <input name="order_id" type="number" required placeholder="644686" class="fld">
+                            <p class="text-gray-600 text-xs mt-1">Unique dispatch Order_ID (1:1 with pharmacy).</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Output file name <span class="text-cyan-400">*</span></label>
+                            <input name="file_name" required placeholder="selecthealth-deliveries" class="fld">
+                            <p class="text-gray-600 text-xs mt-1">Base filename, no extension. Used exactly as stored (extension added at export).</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Address <span class="text-cyan-400">*</span></label>
+                            <input name="address" required placeholder="3981 Major Mackenzie Drive West, Vaughan, Ontario" class="fld">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Home city <span class="text-cyan-400">*</span></label>
+                            <input name="city" required placeholder="Vaughan" class="fld">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">Latitude <span class="text-cyan-400">*</span></label>
+                                <input name="latitude" type="number" step="any" required placeholder="43.842089" class="fld">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">Longitude <span class="text-cyan-400">*</span></label>
+                                <input name="longitude" type="number" step="any" required placeholder="-79.572692" class="fld">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Fallback rate ($/km) <span class="text-cyan-400">*</span></label>
+                            <input name="per_km_rate" type="number" step="any" required placeholder="1.50" class="fld">
+                            <p class="text-gray-600 text-xs mt-1">Used when a delivery's city has no flat rate below.</p>
+                        </div>
+                        <div class="flex items-end">
+                            <label class="inline-flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                                <input name="is_active" type="checkbox" checked class="w-4 h-4 rounded border-slate-600 bg-slate-900 text-cyan-500 focus:ring-cyan-500/50">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- City rates key-value editor -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">City flat rates</label>
+                        <p class="text-gray-600 text-xs mb-3">City names are normalized (lowercased, trimmed). Include this pharmacy's home city too.</p>
+                        <div id="rates-list" class="space-y-2"></div>
+                        <button type="button" id="add-rate" class="mt-3 inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 text-sm font-medium">
+                            <i class="ri-add-line"></i> Add city rate
+                        </button>
+                    </div>
+
+                    <div id="form-error" class="hidden text-red-400 text-sm"></div>
+
+                    <div class="flex items-center justify-end gap-3 pt-2 border-t border-cyan-500/10">
+                        <button type="button" id="cancel-btn" class="px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white transition-colors">Cancel</button>
+                        <button type="submit" id="save-btn" class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/40 transition-all disabled:opacity-60">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .fld { width:100%; padding:0.6rem 0.75rem; border-radius:0.6rem; background:#0f172a; border:1px solid #334155; color:#fff; font-size:0.875rem; }
+        .fld:focus { outline:none; border-color:#06b6d4; box-shadow:0 0 0 1px rgba(6,182,212,0.4); }
+        .fld::placeholder { color:#64748b; }
+    </style>
+
+    <script>
+        const rowsEl = document.getElementById('rows');
+        const listStatus = document.getElementById('list-status');
+        const modal = document.getElementById('modal');
+        const form = document.getElementById('pharmacy-form');
+        const ratesList = document.getElementById('rates-list');
+        const formError = document.getElementById('form-error');
+
+        function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        async function loadList() {
+            listStatus.textContent = 'Loading…';
+            try {
+                const res = await fetch('/api/pharmacies');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load');
+                render(data.pharmacies || []);
+                listStatus.textContent = `${data.pharmacies.length} pharmac${data.pharmacies.length === 1 ? 'y' : 'ies'}`;
+            } catch (err) {
+                listStatus.textContent = '';
+                rowsEl.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-red-400 text-sm">${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        function render(pharmacies) {
+            if (!pharmacies.length) {
+                rowsEl.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-gray-500 text-sm">No pharmacies yet. Add your first one.</td></tr>`;
+                return;
+            }
+            rowsEl.innerHTML = pharmacies.map((p) => {
+                const rateCount = Object.keys(p.city_rates || {}).length;
+                return `<tr class="hover:bg-slate-900/40">
+                    <td class="px-4 py-3 text-white font-medium">${escapeHtml(p.name)}</td>
+                    <td class="px-4 py-3 text-gray-400 tabular-nums">${escapeHtml(p.order_id)}</td>
+                    <td class="px-4 py-3 text-gray-400 font-mono text-xs">${escapeHtml(p.file_name)}</td>
+                    <td class="px-4 py-3 text-gray-400">${escapeHtml(p.city)}</td>
+                    <td class="px-4 py-3 text-gray-400">${rateCount} cit${rateCount === 1 ? 'y' : 'ies'}</td>
+                    <td class="px-4 py-3 text-gray-400 tabular-nums">$${escapeHtml(p.per_km_rate)}</td>
+                    <td class="px-4 py-3">${p.is_active
+                        ? '<span class="text-emerald-400 text-xs">● Active</span>'
+                        : '<span class="text-gray-600 text-xs">○ Inactive</span>'}</td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button data-edit='${escapeHtml(JSON.stringify(p))}' class="text-cyan-400 hover:text-cyan-300 mr-3"><i class="ri-edit-line"></i></button>
+                        <button data-del="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" class="text-gray-500 hover:text-red-400"><i class="ri-delete-bin-line"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ---- city_rates editor ----
+        function addRateRow(city = '', rate = '') {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-2';
+            row.innerHTML = `
+                <input class="fld rate-city" placeholder="city (e.g. vaughan)" value="${escapeHtml(city)}">
+                <span class="text-gray-600">$</span>
+                <input class="fld rate-val" type="number" step="any" placeholder="4.00" value="${escapeHtml(rate)}" style="max-width:120px">
+                <button type="button" class="text-gray-500 hover:text-red-400 px-1"><i class="ri-close-line text-xl"></i></button>`;
+            row.querySelector('button').addEventListener('click', () => row.remove());
+            ratesList.appendChild(row);
+        }
+
+        function collectRates() {
+            const rates = {};
+            for (const row of ratesList.querySelectorAll('div')) {
+                const city = row.querySelector('.rate-city').value.trim().toLowerCase();
+                const valRaw = row.querySelector('.rate-val').value.trim();
+                if (!city && !valRaw) continue;
+                if (!city) throw new Error('A city rate is missing its city name.');
+                if (valRaw === '' || isNaN(Number(valRaw))) throw new Error(`Rate for "${city}" must be a number.`);
+                rates[city] = Number(valRaw);
+            }
+            return rates;
+        }
+
+        // ---- modal ----
+        function openModal(pharmacy) {
+            form.reset();
+            ratesList.innerHTML = '';
+            formError.classList.add('hidden');
+            document.getElementById('modal-title').textContent = pharmacy ? 'Edit Pharmacy' : 'New Pharmacy';
+            if (pharmacy) {
+                form.id.value = pharmacy.id;
+                for (const k of ['name', 'order_id', 'file_name', 'address', 'city', 'latitude', 'longitude', 'per_km_rate']) {
+                    if (form[k]) form[k].value = pharmacy[k] ?? '';
+                }
+                form.is_active.checked = pharmacy.is_active !== false;
+                const rates = pharmacy.city_rates || {};
+                Object.keys(rates).length
+                    ? Object.entries(rates).forEach(([c, r]) => addRateRow(c, r))
+                    : addRateRow();
+            } else {
+                form.is_active.checked = true;
+                addRateRow();
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() { modal.classList.add('hidden'); }
+
+        document.getElementById('new-btn').addEventListener('click', () => openModal(null));
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('cancel-btn').addEventListener('click', closeModal);
+        document.getElementById('add-rate').addEventListener('click', () => addRateRow());
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        rowsEl.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('[data-edit]');
+            const delBtn = e.target.closest('[data-del]');
+            if (editBtn) openModal(JSON.parse(editBtn.getAttribute('data-edit')));
+            if (delBtn) {
+                const id = delBtn.getAttribute('data-del');
+                const name = delBtn.getAttribute('data-name');
+                if (!confirm(`Delete "${name}"? This removes its pricing config.`)) return;
+                const res = await fetch(`/api/pharmacies?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (res.ok) loadList();
+                else alert('Failed to delete.');
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formError.classList.add('hidden');
+            const saveBtn = document.getElementById('save-btn');
+
+            let payload;
+            try {
+                payload = {
+                    name: form.name.value.trim(),
+                    file_name: form.file_name.value.trim(),
+                    order_id: Number(form.order_id.value),
+                    address: form.address.value.trim(),
+                    city: form.city.value.trim(),
+                    latitude: Number(form.latitude.value),
+                    longitude: Number(form.longitude.value),
+                    per_km_rate: Number(form.per_km_rate.value),
+                    is_active: form.is_active.checked,
+                    city_rates: collectRates(),
+                };
+            } catch (err) {
+                formError.textContent = err.message;
+                formError.classList.remove('hidden');
+                return;
+            }
+
+            const id = form.id.value;
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving…';
+            try {
+                const res = await fetch(id ? `/api/pharmacies?id=${encodeURIComponent(id)}` : '/api/pharmacies', {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Save failed');
+                closeModal();
+                loadList();
+            } catch (err) {
+                formError.textContent = err.message;
+                formError.classList.remove('hidden');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save';
+            }
+        });
+
+        loadList();
+    </script>
+
+</body>
+
+</html>
