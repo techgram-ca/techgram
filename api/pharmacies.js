@@ -14,10 +14,7 @@ const FIELDS = [
   "order_id",
   "address",
   "city",
-  "latitude",
-  "longitude",
   "city_rates",
-  "per_km_rate",
   "is_active",
 ];
 
@@ -74,10 +71,7 @@ function validatePharmacy(body, { partial = false } = {}) {
     order_id: () => requireNumber("order_id", { integer: true }),
     address: () => requireString("address"),
     city: () => requireString("city"),
-    latitude: () => requireNumber("latitude"),
-    longitude: () => requireNumber("longitude"),
     city_rates: validateCityRates,
-    per_km_rate: () => requireNumber("per_km_rate"),
     is_active: () => {
       if (body.is_active === undefined) return null;
       out.is_active = Boolean(body.is_active);
@@ -107,7 +101,10 @@ function adminAllowed(req) {
 }
 
 export default async function handler(req, res) {
-  if (!adminAllowed(req)) return res.status(401).json({ error: "Unauthorized" });
+  // POST (insertion) does its own stricter passcode enforcement below; all
+  // other methods use the shared admin gate.
+  if (req.method !== "POST" && !adminAllowed(req))
+    return res.status(401).json({ error: "Unauthorized" });
   try {
     switch (req.method) {
       case "GET": {
@@ -130,6 +127,17 @@ export default async function handler(req, res) {
       }
 
       case "POST": {
+        // Record insertion requires a passcode equal to ADMIN_ACCESS_KEY.
+        const passcode =
+          (req.body && req.body.passcode) || req.headers["x-admin-key"];
+        if (!process.env.ADMIN_ACCESS_KEY)
+          return res.status(403).json({
+            error:
+              "Insertion is disabled: server passcode (ADMIN_ACCESS_KEY) is not configured.",
+          });
+        if (passcode !== process.env.ADMIN_ACCESS_KEY)
+          return res.status(401).json({ error: "Invalid passcode." });
+
         const { error: vErr, value } = validatePharmacy(req.body || {});
         if (vErr) return res.status(400).json({ error: vErr });
 

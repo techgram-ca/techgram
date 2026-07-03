@@ -30,11 +30,12 @@ pricing config (the `pharmacies` table) — no customer data.
 3. **Environment variables** (in addition to the existing `SUPABASE_URL` / `SUPABASE_SECRET_KEY`):
    - No Google Maps key is needed right now — distance-based pricing is
      disabled. Pricing uses the pharmacy's city flat rates only.
-   - `ADMIN_ACCESS_KEY` — *optional but recommended.* When set, the admin API
-     routes (`/api/pharmacies`, `/api/delivery-costs`) require an
-     `x-admin-key` header matching it; the admin pages prompt for the key and
-     remember it for the session. **When unset, the admin routes are open**
-     (see "Open questions" below).
+   - `ADMIN_ACCESS_KEY` — **required to create pharmacies.** The pharmacy form
+     has an *Admin passcode* field that must equal this value; `POST
+     /api/pharmacies` is rejected with 403 if the key is not configured and 401
+     if the passcode does not match. It also gates the other admin routes via
+     the `x-admin-key` header (read/edit/delete). When unset, reads/edits stay
+     open but insertion is blocked.
 4. **Seed the 12 pharmacies** via `/admin/pharmacies`.
 
 ## Pricing logic (per row)
