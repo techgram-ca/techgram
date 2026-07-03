@@ -55,7 +55,6 @@
                         <th class="text-left font-semibold px-4 py-3">File name</th>
                         <th class="text-left font-semibold px-4 py-3">City</th>
                         <th class="text-left font-semibold px-4 py-3">City rates</th>
-                        <th class="text-left font-semibold px-4 py-3">$/km</th>
                         <th class="text-left font-semibold px-4 py-3">Active</th>
                         <th class="px-4 py-3"></th>
                     </tr>
@@ -101,21 +100,6 @@
                             <label class="block text-xs font-semibold text-gray-400 mb-1.5">Home city <span class="text-cyan-400">*</span></label>
                             <input name="city" required placeholder="Vaughan" class="fld">
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">Latitude <span class="text-cyan-400">*</span></label>
-                                <input name="latitude" type="number" step="any" required placeholder="43.842089" class="fld">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">Longitude <span class="text-cyan-400">*</span></label>
-                                <input name="longitude" type="number" step="any" required placeholder="-79.572692" class="fld">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">Fallback rate ($/km) <span class="text-cyan-400">*</span></label>
-                            <input name="per_km_rate" type="number" step="any" required placeholder="1.50" class="fld">
-                            <p class="text-gray-600 text-xs mt-1">Used when a delivery's city has no flat rate below.</p>
-                        </div>
                         <div class="flex items-end">
                             <label class="inline-flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
                                 <input name="is_active" type="checkbox" checked class="w-4 h-4 rounded border-slate-600 bg-slate-900 text-cyan-500 focus:ring-cyan-500/50">
@@ -132,6 +116,13 @@
                         <button type="button" id="add-rate" class="mt-3 inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 text-sm font-medium">
                             <i class="ri-add-line"></i> Add city rate
                         </button>
+                    </div>
+
+                    <!-- Passcode: must equal the server ADMIN_ACCESS_KEY to save -->
+                    <div class="pt-2 border-t border-cyan-500/10">
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">Admin passcode <span class="text-cyan-400">*</span></label>
+                        <input name="passcode" type="password" required autocomplete="off" placeholder="Enter admin passcode to save" class="fld">
+                        <p class="text-gray-600 text-xs mt-1">Required to save. Must match the server's <code>ADMIN_ACCESS_KEY</code>.</p>
                     </div>
 
                     <div id="form-error" class="hidden text-red-400 text-sm"></div>
@@ -195,13 +186,13 @@
                 listStatus.textContent = `${data.pharmacies.length} pharmac${data.pharmacies.length === 1 ? 'y' : 'ies'}`;
             } catch (err) {
                 listStatus.textContent = '';
-                rowsEl.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-red-400 text-sm">${escapeHtml(err.message)}</td></tr>`;
+                rowsEl.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-red-400 text-sm">${escapeHtml(err.message)}</td></tr>`;
             }
         }
 
         function render(pharmacies) {
             if (!pharmacies.length) {
-                rowsEl.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-gray-500 text-sm">No pharmacies yet. Add your first one.</td></tr>`;
+                rowsEl.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500 text-sm">No pharmacies yet. Add your first one.</td></tr>`;
                 return;
             }
             rowsEl.innerHTML = pharmacies.map((p) => {
@@ -212,7 +203,6 @@
                     <td class="px-4 py-3 text-gray-400 font-mono text-xs">${escapeHtml(p.file_name)}</td>
                     <td class="px-4 py-3 text-gray-400">${escapeHtml(p.city)}</td>
                     <td class="px-4 py-3 text-gray-400">${rateCount} cit${rateCount === 1 ? 'y' : 'ies'}</td>
-                    <td class="px-4 py-3 text-gray-400 tabular-nums">$${escapeHtml(p.per_km_rate)}</td>
                     <td class="px-4 py-3">${p.is_active
                         ? '<span class="text-emerald-400 text-xs">● Active</span>'
                         : '<span class="text-gray-600 text-xs">○ Inactive</span>'}</td>
@@ -260,7 +250,7 @@
             el('pharmacy_id').value = pharmacy ? pharmacy.id : '';
             document.getElementById('modal-title').textContent = pharmacy ? 'Edit Pharmacy' : 'New Pharmacy';
             if (pharmacy) {
-                for (const k of ['name', 'order_id', 'file_name', 'address', 'city', 'latitude', 'longitude', 'per_km_rate']) {
+                for (const k of ['name', 'order_id', 'file_name', 'address', 'city']) {
                     if (el(k)) el(k).value = pharmacy[k] ?? '';
                 }
                 el('is_active').checked = pharmacy.is_active !== false;
@@ -304,17 +294,20 @@
 
             let payload;
             try {
+                const passcode = el('passcode').value;
+                if (!passcode) throw new Error('Admin passcode is required to save.');
+                // The passcode is the admin key for this request; store it so the
+                // fetch below (and subsequent list loads) send it as x-admin-key.
+                sessionStorage.setItem('adminKey', passcode);
                 payload = {
                     name: el('name').value.trim(),
                     file_name: el('file_name').value.trim(),
                     order_id: Number(el('order_id').value),
                     address: el('address').value.trim(),
                     city: el('city').value.trim(),
-                    latitude: Number(el('latitude').value),
-                    longitude: Number(el('longitude').value),
-                    per_km_rate: Number(el('per_km_rate').value),
                     is_active: el('is_active').checked,
                     city_rates: collectRates(),
+                    passcode,
                 };
             } catch (err) {
                 formError.textContent = err.message;

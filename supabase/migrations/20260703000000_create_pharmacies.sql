@@ -16,8 +16,6 @@ create table pharmacies (
 
   address           text not null,
   city              text not null,                  -- pharmacy's home city
-  latitude          numeric(9,6) not null,
-  longitude         numeric(9,6) not null,
 
   -- City-based flat rates. Keys are normalized (lowercase, trimmed) city names.
   -- Include the pharmacy's own home city as one of the keys too.

@@ -193,9 +193,6 @@ export default async function handler(req, res) {
     const pharmacies = (rawPharmacies || []).map((p) => ({
       ...p,
       order_id: Number(p.order_id),
-      latitude: Number(p.latitude),
-      longitude: Number(p.longitude),
-      per_km_rate: Number(p.per_km_rate),
       city_rates: normalizeCityRates(p.city_rates),
     }));
 
