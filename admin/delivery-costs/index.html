@@ -247,12 +247,24 @@
                     <strong>${summary.needsCalculation.count} delivery rows have no city flat rate</strong> — marked <code class="text-amber-200">Need to Calculate</code> in the sheet, not defaulted to 0.
                     <ul class="mt-2 space-y-1 list-disc list-inside">${sample}</ul></div>`);
             }
+            if (summary.needsCheck && summary.needsCheck.count > 0) {
+                const sample = summary.needsCheck.sample.map((s) =>
+                    `<li class="text-xs text-orange-400/80">${escapeHtml(s.pharmacy)} · ${escapeHtml(s.status)} · ${escapeHtml(s.address)}</li>`).join('');
+                flags.push(`<div class="rounded-xl border border-orange-500/25 bg-orange-500/5 px-4 py-3 text-sm text-orange-300">
+                    <strong>${summary.needsCheck.count} Cancelled/Unassigned/Assigned rows (with an agent)</strong> — kept but marked <code class="text-orange-200">Need to Check</code>, not priced or included in totals.
+                    <ul class="mt-2 space-y-1 list-disc list-inside">${sample}</ul></div>`);
+            }
             document.getElementById('flags').innerHTML = flags.join('');
 
-            // Files
-            const statusFlag = (p) => p.needsCalc > 0
-                ? `<span title="${p.needsCalc} row(s) need manual calculation" class="inline-flex items-center gap-1 text-red-400"><i class="ri-error-warning-fill"></i> ${p.needsCalc}</span>`
-                : `<span title="All deliveries priced" class="text-emerald-400"><i class="ri-checkbox-circle-fill"></i></span>`;
+            // Files — status flag reflects both Need to Calculate and Need to Check.
+            const statusFlag = (p) => {
+                const parts = [];
+                if (p.needsCalc > 0) parts.push(`${p.needsCalc} to calculate`);
+                if (p.needsCheck > 0) parts.push(`${p.needsCheck} to check`);
+                return parts.length
+                    ? `<span title="${parts.join(', ')}" class="inline-flex items-center gap-1 text-red-400"><i class="ri-error-warning-fill"></i> ${p.needsCalc + p.needsCheck}</span>`
+                    : `<span title="Final — all deliveries priced" class="text-emerald-400"><i class="ri-checkbox-circle-fill"></i></span>`;
+            };
             document.getElementById('file-rows').innerHTML = summary.perPharmacy.map((p, i) => `
                 <tr class="hover:bg-slate-900/40">
                     <td class="px-4 py-3 text-white font-medium">${escapeHtml(p.name)}</td>
@@ -282,6 +294,7 @@
                 const badge = p.final
                     ? `<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 rounded-full px-2.5 py-1"><i class="ri-checkbox-circle-fill"></i> Final</span>`
                     : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-red-400 border border-red-500/30 bg-red-500/10 rounded-full px-2.5 py-1"><i class="ri-error-warning-fill"></i> Manual step needed</span>`;
+                const titleCase = (s) => String(s).replace(/\b\w/g, (c) => c.toUpperCase());
                 const lines = (p.breakdown || []).length
                     ? p.breakdown.map((b) =>
                         `<div class="flex justify-between text-sm text-gray-300 tabular-nums">
@@ -290,9 +303,21 @@
                         </div>`).join('')
                     : `<div class="text-sm text-gray-600">No priced deliveries.</div>`;
                 const nc = p.needsCalc > 0
-                    ? `<div class="flex justify-between text-sm text-red-400/90 tabular-nums mt-1">
+                    ? `<div class="flex justify-between text-sm text-amber-400/90 tabular-nums mt-1">
                             <span>Need to Calculate × ${p.needsCalc}</span><span>—</span></div>`
                     : '';
+                const ncheck = p.needsCheck > 0
+                    ? `<div class="flex justify-between text-sm text-orange-400/90 tabular-nums mt-1">
+                            <span>Need to Check × ${p.needsCheck}</span><span>—</span></div>`
+                    : '';
+                // Per-city delivery stats
+                const cityLines = (p.cityBreakdown || []).length
+                    ? p.cityBreakdown.map((c) =>
+                        `<div class="flex justify-between text-xs text-gray-400 tabular-nums">
+                            <span>${escapeHtml(titleCase(c.city))} <span class="text-gray-600">× ${c.count}</span></span>
+                            <span class="text-gray-500">${c.subtotal != null ? money(c.subtotal) : '<span class="text-amber-400/80">to calc</span>'}</span>
+                        </div>`).join('')
+                    : `<div class="text-xs text-gray-600">No deliveries.</div>`;
                 return `
                 <div class="rounded-xl border ${p.final ? 'border-cyan-500/10' : 'border-red-500/20'} bg-slate-900/40 p-5">
                     <div class="flex items-start justify-between mb-3">
@@ -303,8 +328,14 @@
                         ${badge}
                     </div>
                     <div class="space-y-1 border-t border-cyan-500/10 pt-3">
+                        <div class="text-[11px] uppercase tracking-wide text-gray-600 mb-1">By rate</div>
                         ${lines}
                         ${nc}
+                        ${ncheck}
+                    </div>
+                    <div class="space-y-1 border-t border-cyan-500/10 mt-3 pt-3">
+                        <div class="text-[11px] uppercase tracking-wide text-gray-600 mb-1">Deliveries by city</div>
+                        ${cityLines}
                     </div>
                     <div class="flex justify-between items-center border-t border-cyan-500/10 mt-3 pt-3">
                         <span class="text-gray-400 text-sm font-medium">Pharmacy total</span>
