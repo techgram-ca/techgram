@@ -232,6 +232,7 @@
                 flags.push(`<div class="rounded-xl border border-cyan-500/10 bg-slate-900/40 px-4 py-3 text-sm text-gray-400">
                     <strong class="text-gray-200">Discarded ${summary.discarded.total}:</strong>
                     ${summary.discarded.noAgent} no agent assigned (Cancelled/Unassigned/Assigned),
+                    ${summary.discarded.nonCompletedPickup || 0} non-completed pick-ups,
                     ${summary.discarded.unrecognizedStatus} unrecognized / blank status.</div>`);
             }
             if (summary.unmatched.count > 0) {

@@ -52,11 +52,13 @@ pricing config (the `pharmacies` table) — no customer data.
 
 ## Row inclusion
 
-- `Completed` → always kept and priced normally.
-- `Cancelled` / `Unassigned` / `Assigned` → kept **only if an agent is
-  assigned** (`Agent_ID`/`Agent_Name` populated); otherwise discarded. When
-  kept, they are **not priced** — their `Cost` is set to `Need to Check`
-  (flagged for manual review, excluded from invoice totals).
+- `Completed` → always kept (Delivery priced, Pick-up blank).
+- **Pick-up rows are only included when `Completed`** — a Pick-up with any
+  other status is discarded (counted under "non-completed pick-ups").
+- Non-Pick-up (Delivery) rows with `Cancelled` / `Unassigned` / `Assigned` →
+  kept **only if an agent is assigned** (`Agent_ID`/`Agent_Name` populated);
+  otherwise discarded. When kept, they are **not priced** — their `Cost` is set
+  to `Need to Check` (flagged for review, excluded from invoice totals).
 - Any other/blank status → discarded and counted under
   "unrecognized status" in the summary (see below).
 

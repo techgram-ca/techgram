@@ -236,7 +236,7 @@ export function processRows(rows, pharmacies) {
   const summary = {
     totalRows: rows.length,
     kept: 0,
-    discarded: { total: 0, noAgent: 0, unrecognizedStatus: 0 },
+    discarded: { total: 0, noAgent: 0, unrecognizedStatus: 0, nonCompletedPickup: 0 },
     unmatched: { count: 0, orderIds: {} },
     needsCalculation: { count: 0, sample: [] },
     needsCheck: { count: 0, sample: [] },
@@ -247,10 +247,15 @@ export function processRows(rows, pharmacies) {
   for (const row of rows) {
     const statusKey = String(row.Task_Status ?? "").trim().toLowerCase();
 
-    // --- Row inclusion rules (section 4) ---
+    // --- Row inclusion rules ---
+    const isPickup = String(row.Task_Type ?? "").trim().toLowerCase() === "pick-up";
     let keep;
     if (statusKey === "completed") {
       keep = true;
+    } else if (isPickup) {
+      // Pick-up rows are only ever included when Completed.
+      keep = false;
+      summary.discarded.nonCompletedPickup++;
     } else if (KNOWN_AGENT_CHECK.has(statusKey)) {
       keep = hasAgent(row);
       if (!keep) summary.discarded.noAgent++;
