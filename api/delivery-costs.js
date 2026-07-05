@@ -53,6 +53,12 @@ const PHARMACY_SOURCED = {
 // for now — these are meant to be computed later.)
 const NEEDS_CALC = "Need to Calculate";
 
+// Placeholder written to the Cost cell for kept Cancelled/Unassigned/Assigned
+// rows (which, per the inclusion rules, always have an agent). Their delivery
+// isn't necessarily complete, so they are flagged for manual review rather than
+// priced — and are excluded from invoice totals.
+const NEEDS_CHECK = "Need to Check";
+
 const EMPTY_TOKENS = new Set(["", "-", "0", "null", "n/a", "na"]);
 
 function isEmptyToken(v) {
@@ -136,16 +142,20 @@ export function parseCityFromAddress(address) {
 // Distance-based pricing is disabled for now: we only apply the pharmacy's
 // city flat rates. A Delivery row whose city has no flat rate gets the
 // `Need to Calculate` placeholder (to be priced later), never 0.
-// Returns { cost: number|string, resolved: boolean, reason?: string }.
+// Returns { cost, resolved, city, rate, reason? }.
 function calculateCost(row, pharmacy) {
   const city = parseCityFromAddress(row.Customer_Address);
-  if (city) {
-    const rate = pharmacy.city_rates[city.trim().toLowerCase()];
-    if (rate !== undefined) return { cost: round2(rate), resolved: true };
+  const key = city ? city.trim().toLowerCase() : null;
+  if (key) {
+    const rate = pharmacy.city_rates[key];
+    if (rate !== undefined)
+      return { cost: round2(rate), resolved: true, city: key, rate: round2(rate) };
   }
   return {
     cost: NEEDS_CALC,
     resolved: false,
+    city: key,
+    rate: null,
     reason: city ? `no flat rate for "${city}"` : "city not resolved from address",
   };
 }
@@ -222,13 +232,14 @@ const KNOWN_AGENT_CHECK = new Set(["cancelled", "unassigned", "assigned"]);
 // Apply inclusion rules, match by Order_ID, and price Delivery rows via the
 // pharmacy's city flat rates. Pure and synchronous. Returns { buckets, summary }.
 export function processRows(rows, pharmacies) {
-  const buckets = new Map(); // pharmacyId -> { pharmacy, rows: [] }
+  const buckets = new Map(); // pharmacyId -> { pharmacy, rows, cityStats }
   const summary = {
     totalRows: rows.length,
     kept: 0,
     discarded: { total: 0, noAgent: 0, unrecognizedStatus: 0 },
     unmatched: { count: 0, orderIds: {} },
     needsCalculation: { count: 0, sample: [] },
+    needsCheck: { count: 0, sample: [] },
     perPharmacy: [],
     warnings: [],
   };
@@ -264,24 +275,49 @@ export function processRows(rows, pharmacies) {
     }
 
     summary.kept++;
-    if (!buckets.has(pharmacy.id)) buckets.set(pharmacy.id, { pharmacy, rows: [] });
+    if (!buckets.has(pharmacy.id))
+      buckets.set(pharmacy.id, { pharmacy, rows: [], cityStats: new Map(), needsCheck: 0 });
     const bucket = buckets.get(pharmacy.id);
 
-    // --- Cost: only Delivery rows are priced (Pick-up stays blank) ---
     let cost = null;
-    const isDelivery = String(row.Task_Type ?? "").trim().toLowerCase() === "delivery";
-    if (isDelivery) {
-      const result = calculateCost(row, pharmacy);
-      cost = result.cost;
-      if (!result.resolved) {
-        summary.needsCalculation.count++;
-        if (summary.needsCalculation.sample.length < 10) {
-          summary.needsCalculation.sample.push({
-            pharmacy: pharmacy.name,
-            order_id: pharmacy.order_id,
-            address: row.Customer_Address,
-            reason: result.reason,
-          });
+    if (KNOWN_AGENT_CHECK.has(statusKey)) {
+      // Kept Cancelled/Unassigned/Assigned row (has an agent). Don't price it —
+      // flag for manual review and exclude from invoice totals.
+      cost = NEEDS_CHECK;
+      bucket.needsCheck++;
+      summary.needsCheck.count++;
+      if (summary.needsCheck.sample.length < 10) {
+        summary.needsCheck.sample.push({
+          pharmacy: pharmacy.name,
+          order_id: pharmacy.order_id,
+          status: row.Task_Status,
+          address: row.Customer_Address,
+        });
+      }
+    } else {
+      // Completed: only Delivery rows are priced (Pick-up stays blank).
+      const isDelivery = String(row.Task_Type ?? "").trim().toLowerCase() === "delivery";
+      if (isDelivery) {
+        const result = calculateCost(row, pharmacy);
+        cost = result.cost;
+
+        // Per-city delivery stats for the invoice.
+        const ck = result.city || "(unresolved)";
+        const cs = bucket.cityStats.get(ck) || { city: ck, count: 0, rate: result.rate };
+        cs.count++;
+        if (cs.rate == null && result.rate != null) cs.rate = result.rate;
+        bucket.cityStats.set(ck, cs);
+
+        if (!result.resolved) {
+          summary.needsCalculation.count++;
+          if (summary.needsCalculation.sample.length < 10) {
+            summary.needsCalculation.sample.push({
+              pharmacy: pharmacy.name,
+              order_id: pharmacy.order_id,
+              address: row.Customer_Address,
+              reason: result.reason,
+            });
+          }
         }
       }
     }
@@ -300,19 +336,31 @@ const TOTAL_LABEL_COLUMN = OUTPUT_COLUMNS[OUTPUT_COLUMNS.length - 1];
 // [{ filename, mimeType, base64, … }].
 export function buildFiles(buckets, summary, fmt) {
   const files = [];
-  for (const { pharmacy, rows: outRows } of buckets.values()) {
+  for (const { pharmacy, rows: outRows, cityStats } of buckets.values()) {
     // --- Invoice breakdown: group priced deliveries by rate (rate × count) ---
     const groups = new Map(); // rate -> count
     let needsCalc = 0;
+    let needsCheck = 0;
     for (const r of outRows) {
       const c = r[COST_COLUMN];
       if (c === NEEDS_CALC) needsCalc++;
+      else if (c === NEEDS_CHECK) needsCheck++;
       else if (typeof c === "number") groups.set(c, (groups.get(c) || 0) + 1);
     }
     const breakdown = [...groups.entries()]
       .map(([rate, count]) => ({ rate, count, subtotal: round2(rate * count) }))
       .sort((a, b) => a.rate - b.rate);
     const total = round2(breakdown.reduce((s, b) => s + b.subtotal, 0));
+
+    // --- Per-city delivery stats (count, and rate/subtotal when priced) ---
+    const cityBreakdown = [...(cityStats ? cityStats.values() : [])]
+      .map((s) => ({
+        city: s.city,
+        count: s.count,
+        rate: s.rate ?? null,
+        subtotal: s.rate != null ? round2(s.rate * s.count) : null,
+      }))
+      .sort((a, b) => b.count - a.count);
 
     const deliveries = outRows.filter(
       (r) => String(r.Task_Type).trim().toLowerCase() === "delivery"
@@ -348,6 +396,7 @@ export function buildFiles(buckets, summary, fmt) {
       deliveries,
       pickups: outRows.length - deliveries,
       needsCalc,
+      needsCheck,
     });
 
     summary.perPharmacy.push({
@@ -358,9 +407,12 @@ export function buildFiles(buckets, summary, fmt) {
       deliveries,
       pickups: outRows.length - deliveries,
       needsCalc,
-      final: needsCalc === 0,   // true = fully priced, false = manual step needed
-      breakdown,                // [{ rate, count, subtotal }]
-      total,                    // sum of priced deliveries (excludes Need to Calculate)
+      needsCheck,
+      // final = fully priced: no Need to Calculate AND no Need to Check rows.
+      final: needsCalc === 0 && needsCheck === 0,
+      breakdown,                // [{ rate, count, subtotal }] by rate
+      cityBreakdown,            // [{ city, count, rate, subtotal }] by city
+      total,                    // sum of priced deliveries (excludes Need to Calculate/Check)
     });
   }
 

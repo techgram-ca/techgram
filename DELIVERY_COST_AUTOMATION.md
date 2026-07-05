@@ -52,9 +52,11 @@ pricing config (the `pharmacies` table) — no customer data.
 
 ## Row inclusion
 
-- `Completed` → always kept.
-- `Cancelled` / `Unassigned` / `Assigned` → kept only if an agent is assigned
-  (`Agent_ID`/`Agent_Name` populated); otherwise discarded.
+- `Completed` → always kept and priced normally.
+- `Cancelled` / `Unassigned` / `Assigned` → kept **only if an agent is
+  assigned** (`Agent_ID`/`Agent_Name` populated); otherwise discarded. When
+  kept, they are **not priced** — their `Cost` is set to `Need to Check`
+  (flagged for manual review, excluded from invoice totals).
 - Any other/blank status → discarded and counted under
   "unrecognized status" in the summary (see below).
 
@@ -89,9 +91,13 @@ total/kept/discarded (with reasons), unmatched `Order_ID`s, and
 `Need to Calculate` rows — nothing is silently dropped.
 
 `summary.perPharmacy[i]` also carries the invoice data used by the UI:
-`breakdown` (`[{ rate, count, subtotal }]`), `total` (sum of priced
-deliveries, excluding `Need to Calculate`), `needsCalc`, and `final`
-(`true` when every delivery is priced, `false` when a manual step is needed).
-The upload page renders a green/red status flag per file and an Invoice Summary
-section (per-pharmacy `rate × count = subtotal`, pharmacy total, final vs.
-manual-step flag, and a grand total).
+`breakdown` (`[{ rate, count, subtotal }]` by rate), `cityBreakdown`
+(`[{ city, count, rate, subtotal }]` — deliveries per city), `total` (sum of
+priced deliveries, excluding `Need to Calculate` and `Need to Check`),
+`needsCalc`, `needsCheck`, and `final` (`true` only when there are no
+`Need to Calculate` and no `Need to Check` rows). `summary.needsCheck` reports
+the count + a sample of flagged Cancelled/Unassigned/Assigned rows. The upload
+page renders a green/red status flag per file and an Invoice Summary section
+(per-pharmacy `rate × count = subtotal`, deliveries-by-city, `Need to
+Calculate`/`Need to Check` counts, pharmacy total, final flag, and a grand
+total).
