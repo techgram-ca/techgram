@@ -64,12 +64,13 @@ These were defaulted because the spec left them open; each is easy to change:
 - **Output columns**: the single `OUTPUT_COLUMNS` array at the top of
   `api/delivery-costs.js` (`Merge_ID, Task_ID, Order_ID, Task_Type, Agent_ID,
   Agent_Name, Pick_up_From, Pharmacy_Address, Customer_Name, Customer_Address,
-  Customer_Phone, Complete_Before, Completion_Time, Task_Status` + appended
+  Customer_Phone, Complete_Before, Completion_Time, Day, Task_Status` + appended
   `Cost`). `Pick_up_From` (pharmacy name) and `Pharmacy_Address` are sourced
   from the matched pharmacy record in the DB (by `Order_ID`), not the raw sheet
-  text — this removes name/address discrepancies. Each sheet ends with a
+  text — this removes name/address discrepancies. `Day` is computed (weekday
+  parsed from `Completion_Time`, e.g. `Tuesday`). Each sheet ends with a
   `TOTAL` row summing `Cost` (excluding `Need to Calculate`). Edit
-  `OUTPUT_COLUMNS` / `PHARMACY_SOURCED` to change the layout.
+  `OUTPUT_COLUMNS` / `PHARMACY_SOURCED` / `COMPUTED` to change the layout.
 - **Unknown/blank status** (spec §4.3 said to ask): defaulted to *discard +
   surface in summary*. To instead apply the agent check, adjust the `else`
   branch in `processRows`.

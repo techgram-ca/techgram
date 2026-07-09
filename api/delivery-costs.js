@@ -37,6 +37,7 @@ const OUTPUT_COLUMNS = [
   "Customer_Phone",
   "Complete_Before",
   "Completion_Time",
+  "Day",                // computed: day of week from Completion_Time
   "Task_Status",
 ];
 const COST_COLUMN = "Cost";
@@ -46,6 +47,39 @@ const COST_COLUMN = "Cost";
 const PHARMACY_SOURCED = {
   Pick_up_From: (p) => p.name,
   Pharmacy_Address: (p) => p.address,
+};
+
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+
+// Parse a dispatch timestamp like "30 Jun 2026 07:08:00 pm" into a Date.
+// Returns null for blank/"-"/unparseable values.
+export function parseCompletionTime(v) {
+  if (v === undefined || v === null) return null;
+  const s = String(v).trim();
+  if (!s || s === "-") return null;
+  const m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(am|pm)?)?/i);
+  if (m) {
+    const month = MONTHS[m[2].slice(0, 3).toLowerCase()];
+    if (month !== undefined) {
+      let hour = m[4] ? parseInt(m[4], 10) : 0;
+      const ap = m[7] && m[7].toLowerCase();
+      if (ap === "pm" && hour < 12) hour += 12;
+      if (ap === "am" && hour === 12) hour = 0;
+      return new Date(parseInt(m[3], 10), month, parseInt(m[1], 10), hour,
+        m[5] ? parseInt(m[5], 10) : 0, m[6] ? parseInt(m[6], 10) : 0);
+    }
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Columns computed from the uploaded row (not copied verbatim).
+const COMPUTED = {
+  Day: (row) => {
+    const d = parseCompletionTime(row.Completion_Time);
+    return d ? WEEKDAYS[d.getDay()] : "";
+  },
 };
 
 // Placeholder written to the Cost cell for Delivery rows whose city has no flat
@@ -147,7 +181,9 @@ function round2(n) {
 function projectRow(row, cost, pharmacy) {
   const out = {};
   for (const col of OUTPUT_COLUMNS) {
-    out[col] = PHARMACY_SOURCED[col] ? PHARMACY_SOURCED[col](pharmacy) : row[col] ?? "";
+    out[col] = PHARMACY_SOURCED[col] ? PHARMACY_SOURCED[col](pharmacy)
+      : COMPUTED[col] ? COMPUTED[col](row)
+      : row[col] ?? "";
   }
   out[COST_COLUMN] = cost === null || cost === undefined ? "" : cost;
   return out;
