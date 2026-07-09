@@ -52,13 +52,10 @@ pricing config (the `pharmacies` table) — no customer data.
 
 ## Row inclusion
 
-- `Completed` → always kept and priced normally.
-- `Cancelled` / `Unassigned` / `Assigned` → kept **only if an agent is
-  assigned** (`Agent_ID`/`Agent_Name` populated); otherwise discarded. When
-  kept, they are **not priced** — their `Cost` is set to `Need to Check`
-  (flagged for manual review, excluded from invoice totals).
-- Any other/blank status → discarded and counted under
-  "unrecognized status" in the summary (see below).
+- **Only `Completed` rows are kept** (Delivery priced, Pick-up blank).
+- Every other status (`Cancelled`, `Unassigned`, `Assigned`, blank, …) is
+  discarded. The summary reports the discarded total and a per-status
+  breakdown (`summary.discarded.byStatus`).
 
 ## Assumptions made (change points)
 
@@ -67,12 +64,13 @@ These were defaulted because the spec left them open; each is easy to change:
 - **Output columns**: the single `OUTPUT_COLUMNS` array at the top of
   `api/delivery-costs.js` (`Merge_ID, Task_ID, Order_ID, Task_Type, Agent_ID,
   Agent_Name, Pick_up_From, Pharmacy_Address, Customer_Name, Customer_Address,
-  Customer_Phone, Complete_Before, Completion_Time, Task_Status` + appended
+  Customer_Phone, Complete_Before, Completion_Time, Day, Task_Status` + appended
   `Cost`). `Pick_up_From` (pharmacy name) and `Pharmacy_Address` are sourced
   from the matched pharmacy record in the DB (by `Order_ID`), not the raw sheet
-  text — this removes name/address discrepancies. Each sheet ends with a
+  text — this removes name/address discrepancies. `Day` is computed (weekday
+  parsed from `Completion_Time`, e.g. `Tuesday`). Each sheet ends with a
   `TOTAL` row summing `Cost` (excluding `Need to Calculate`). Edit
-  `OUTPUT_COLUMNS` / `PHARMACY_SOURCED` to change the layout.
+  `OUTPUT_COLUMNS` / `PHARMACY_SOURCED` / `COMPUTED` to change the layout.
 - **Unknown/blank status** (spec §4.3 said to ask): defaulted to *discard +
   surface in summary*. To instead apply the agent check, adjust the `else`
   branch in `processRows`.
@@ -93,11 +91,8 @@ total/kept/discarded (with reasons), unmatched `Order_ID`s, and
 `summary.perPharmacy[i]` also carries the invoice data used by the UI:
 `breakdown` (`[{ rate, count, subtotal }]` by rate), `cityBreakdown`
 (`[{ city, count, rate, subtotal }]` — deliveries per city), `total` (sum of
-priced deliveries, excluding `Need to Calculate` and `Need to Check`),
-`needsCalc`, `needsCheck`, and `final` (`true` only when there are no
-`Need to Calculate` and no `Need to Check` rows). `summary.needsCheck` reports
-the count + a sample of flagged Cancelled/Unassigned/Assigned rows. The upload
-page renders a green/red status flag per file and an Invoice Summary section
-(per-pharmacy `rate × count = subtotal`, deliveries-by-city, `Need to
-Calculate`/`Need to Check` counts, pharmacy total, final flag, and a grand
-total).
+priced deliveries, excluding `Need to Calculate`), `needsCalc`, and `final`
+(`true` when there are no `Need to Calculate` rows). The upload page renders a
+green/red status flag per file and an Invoice Summary section (per-pharmacy
+`rate × count = subtotal`, deliveries-by-city, `Need to Calculate` count,
+pharmacy total, final flag, and a grand total).

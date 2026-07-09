@@ -37,6 +37,7 @@ const OUTPUT_COLUMNS = [
   "Customer_Phone",
   "Complete_Before",
   "Completion_Time",
+  "Day",                // computed: day of week from Completion_Time
   "Task_Status",
 ];
 const COST_COLUMN = "Cost";
@@ -48,30 +49,43 @@ const PHARMACY_SOURCED = {
   Pharmacy_Address: (p) => p.address,
 };
 
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+
+// Parse a dispatch timestamp like "30 Jun 2026 07:08:00 pm" into a Date.
+// Returns null for blank/"-"/unparseable values.
+export function parseCompletionTime(v) {
+  if (v === undefined || v === null) return null;
+  const s = String(v).trim();
+  if (!s || s === "-") return null;
+  const m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(am|pm)?)?/i);
+  if (m) {
+    const month = MONTHS[m[2].slice(0, 3).toLowerCase()];
+    if (month !== undefined) {
+      let hour = m[4] ? parseInt(m[4], 10) : 0;
+      const ap = m[7] && m[7].toLowerCase();
+      if (ap === "pm" && hour < 12) hour += 12;
+      if (ap === "am" && hour === 12) hour = 0;
+      return new Date(parseInt(m[3], 10), month, parseInt(m[1], 10), hour,
+        m[5] ? parseInt(m[5], 10) : 0, m[6] ? parseInt(m[6], 10) : 0);
+    }
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Columns computed from the uploaded row (not copied verbatim).
+const COMPUTED = {
+  Day: (row) => {
+    const d = parseCompletionTime(row.Completion_Time);
+    return d ? WEEKDAYS[d.getDay()] : "";
+  },
+};
+
 // Placeholder written to the Cost cell for Delivery rows whose city has no flat
 // rate in the pharmacy's city_rates. (Distance-based calculation is disabled
 // for now — these are meant to be computed later.)
 const NEEDS_CALC = "Need to Calculate";
-
-// Placeholder written to the Cost cell for kept Cancelled/Unassigned/Assigned
-// rows (which, per the inclusion rules, always have an agent). Their delivery
-// isn't necessarily complete, so they are flagged for manual review rather than
-// priced — and are excluded from invoice totals.
-const NEEDS_CHECK = "Need to Check";
-
-const EMPTY_TOKENS = new Set(["", "-", "0", "null", "n/a", "na"]);
-
-function isEmptyToken(v) {
-  return v === undefined || v === null || EMPTY_TOKENS.has(String(v).trim().toLowerCase());
-}
-
-export function hasAgent(row) {
-  const id = row.Agent_ID;
-  const name = row.Agent_Name;
-  const idOk = !isEmptyToken(id);
-  const nameOk = name !== undefined && name !== null && !EMPTY_TOKENS.has(String(name).trim().toLowerCase());
-  return idOk || nameOk;
-}
 
 function parseNumber(v) {
   if (v === undefined || v === null || String(v).trim() === "" || String(v).trim() === "-") return null;
@@ -167,7 +181,9 @@ function round2(n) {
 function projectRow(row, cost, pharmacy) {
   const out = {};
   for (const col of OUTPUT_COLUMNS) {
-    out[col] = PHARMACY_SOURCED[col] ? PHARMACY_SOURCED[col](pharmacy) : row[col] ?? "";
+    out[col] = PHARMACY_SOURCED[col] ? PHARMACY_SOURCED[col](pharmacy)
+      : COMPUTED[col] ? COMPUTED[col](row)
+      : row[col] ?? "";
   }
   out[COST_COLUMN] = cost === null || cost === undefined ? "" : cost;
   return out;
@@ -227,8 +243,6 @@ export default async function handler(req, res) {
   }
 }
 
-const KNOWN_AGENT_CHECK = new Set(["cancelled", "unassigned", "assigned"]);
-
 // Apply inclusion rules, match by Order_ID, and price Delivery rows via the
 // pharmacy's city flat rates. Pure and synchronous. Returns { buckets, summary }.
 export function processRows(rows, pharmacies) {
@@ -236,10 +250,10 @@ export function processRows(rows, pharmacies) {
   const summary = {
     totalRows: rows.length,
     kept: 0,
-    discarded: { total: 0, noAgent: 0, unrecognizedStatus: 0 },
+    // Only Completed rows are kept; everything else is discarded, tallied by status.
+    discarded: { total: 0, byStatus: {} },
     unmatched: { count: 0, orderIds: {} },
     needsCalculation: { count: 0, sample: [] },
-    needsCheck: { count: 0, sample: [] },
     perPharmacy: [],
     warnings: [],
   };
@@ -247,24 +261,15 @@ export function processRows(rows, pharmacies) {
   for (const row of rows) {
     const statusKey = String(row.Task_Status ?? "").trim().toLowerCase();
 
-    // --- Row inclusion rules (section 4) ---
-    let keep;
-    if (statusKey === "completed") {
-      keep = true;
-    } else if (KNOWN_AGENT_CHECK.has(statusKey)) {
-      keep = hasAgent(row);
-      if (!keep) summary.discarded.noAgent++;
-    } else {
-      // Unrecognized / blank status → discard, surfaced in summary.
-      keep = false;
-      summary.discarded.unrecognizedStatus++;
-    }
-    if (!keep) {
+    // --- Row inclusion: keep only Completed rows; discard everything else. ---
+    if (statusKey !== "completed") {
       summary.discarded.total++;
+      const label = statusKey || "(blank)";
+      summary.discarded.byStatus[label] = (summary.discarded.byStatus[label] || 0) + 1;
       continue;
     }
 
-    // --- Match to pharmacy by Order_ID only (section 3) ---
+    // --- Match to pharmacy by Order_ID only ---
     const orderId = parseOrderId(row.Order_ID);
     const { pharmacy } = matchPharmacy(pharmacies, orderId);
     if (!pharmacy) {
@@ -276,48 +281,32 @@ export function processRows(rows, pharmacies) {
 
     summary.kept++;
     if (!buckets.has(pharmacy.id))
-      buckets.set(pharmacy.id, { pharmacy, rows: [], cityStats: new Map(), needsCheck: 0 });
+      buckets.set(pharmacy.id, { pharmacy, rows: [], cityStats: new Map() });
     const bucket = buckets.get(pharmacy.id);
 
+    // Completed: only Delivery rows are priced (Pick-up stays blank).
     let cost = null;
-    if (KNOWN_AGENT_CHECK.has(statusKey)) {
-      // Kept Cancelled/Unassigned/Assigned row (has an agent). Don't price it —
-      // flag for manual review and exclude from invoice totals.
-      cost = NEEDS_CHECK;
-      bucket.needsCheck++;
-      summary.needsCheck.count++;
-      if (summary.needsCheck.sample.length < 10) {
-        summary.needsCheck.sample.push({
-          pharmacy: pharmacy.name,
-          order_id: pharmacy.order_id,
-          status: row.Task_Status,
-          address: row.Customer_Address,
-        });
-      }
-    } else {
-      // Completed: only Delivery rows are priced (Pick-up stays blank).
-      const isDelivery = String(row.Task_Type ?? "").trim().toLowerCase() === "delivery";
-      if (isDelivery) {
-        const result = calculateCost(row, pharmacy);
-        cost = result.cost;
+    const isDelivery = String(row.Task_Type ?? "").trim().toLowerCase() === "delivery";
+    if (isDelivery) {
+      const result = calculateCost(row, pharmacy);
+      cost = result.cost;
 
-        // Per-city delivery stats for the invoice.
-        const ck = result.city || "(unresolved)";
-        const cs = bucket.cityStats.get(ck) || { city: ck, count: 0, rate: result.rate };
-        cs.count++;
-        if (cs.rate == null && result.rate != null) cs.rate = result.rate;
-        bucket.cityStats.set(ck, cs);
+      // Per-city delivery stats for the invoice.
+      const ck = result.city || "(unresolved)";
+      const cs = bucket.cityStats.get(ck) || { city: ck, count: 0, rate: result.rate };
+      cs.count++;
+      if (cs.rate == null && result.rate != null) cs.rate = result.rate;
+      bucket.cityStats.set(ck, cs);
 
-        if (!result.resolved) {
-          summary.needsCalculation.count++;
-          if (summary.needsCalculation.sample.length < 10) {
-            summary.needsCalculation.sample.push({
-              pharmacy: pharmacy.name,
-              order_id: pharmacy.order_id,
-              address: row.Customer_Address,
-              reason: result.reason,
-            });
-          }
+      if (!result.resolved) {
+        summary.needsCalculation.count++;
+        if (summary.needsCalculation.sample.length < 10) {
+          summary.needsCalculation.sample.push({
+            pharmacy: pharmacy.name,
+            order_id: pharmacy.order_id,
+            address: row.Customer_Address,
+            reason: result.reason,
+          });
         }
       }
     }
@@ -340,11 +329,9 @@ export function buildFiles(buckets, summary, fmt) {
     // --- Invoice breakdown: group priced deliveries by rate (rate × count) ---
     const groups = new Map(); // rate -> count
     let needsCalc = 0;
-    let needsCheck = 0;
     for (const r of outRows) {
       const c = r[COST_COLUMN];
       if (c === NEEDS_CALC) needsCalc++;
-      else if (c === NEEDS_CHECK) needsCheck++;
       else if (typeof c === "number") groups.set(c, (groups.get(c) || 0) + 1);
     }
     const breakdown = [...groups.entries()]
@@ -396,7 +383,6 @@ export function buildFiles(buckets, summary, fmt) {
       deliveries,
       pickups: outRows.length - deliveries,
       needsCalc,
-      needsCheck,
     });
 
     summary.perPharmacy.push({
@@ -407,12 +393,11 @@ export function buildFiles(buckets, summary, fmt) {
       deliveries,
       pickups: outRows.length - deliveries,
       needsCalc,
-      needsCheck,
-      // final = fully priced: no Need to Calculate AND no Need to Check rows.
-      final: needsCalc === 0 && needsCheck === 0,
+      // final = fully priced: no Need to Calculate rows.
+      final: needsCalc === 0,
       breakdown,                // [{ rate, count, subtotal }] by rate
       cityBreakdown,            // [{ city, count, rate, subtotal }] by city
-      total,                    // sum of priced deliveries (excludes Need to Calculate/Check)
+      total,                    // sum of priced deliveries (excludes Need to Calculate)
     });
   }
 
