@@ -52,15 +52,10 @@ pricing config (the `pharmacies` table) — no customer data.
 
 ## Row inclusion
 
-- `Completed` → always kept (Delivery priced, Pick-up blank).
-- **Pick-up rows are only included when `Completed`** — a Pick-up with any
-  other status is discarded (counted under "non-completed pick-ups").
-- Non-Pick-up (Delivery) rows with `Cancelled` / `Unassigned` / `Assigned` →
-  kept **only if an agent is assigned** (`Agent_ID`/`Agent_Name` populated);
-  otherwise discarded. When kept, they are **not priced** — their `Cost` is set
-  to `Need to Check` (flagged for review, excluded from invoice totals).
-- Any other/blank status → discarded and counted under
-  "unrecognized status" in the summary (see below).
+- **Only `Completed` rows are kept** (Delivery priced, Pick-up blank).
+- Every other status (`Cancelled`, `Unassigned`, `Assigned`, blank, …) is
+  discarded. The summary reports the discarded total and a per-status
+  breakdown (`summary.discarded.byStatus`).
 
 ## Assumptions made (change points)
 
@@ -95,11 +90,8 @@ total/kept/discarded (with reasons), unmatched `Order_ID`s, and
 `summary.perPharmacy[i]` also carries the invoice data used by the UI:
 `breakdown` (`[{ rate, count, subtotal }]` by rate), `cityBreakdown`
 (`[{ city, count, rate, subtotal }]` — deliveries per city), `total` (sum of
-priced deliveries, excluding `Need to Calculate` and `Need to Check`),
-`needsCalc`, `needsCheck`, and `final` (`true` only when there are no
-`Need to Calculate` and no `Need to Check` rows). `summary.needsCheck` reports
-the count + a sample of flagged Cancelled/Unassigned/Assigned rows. The upload
-page renders a green/red status flag per file and an Invoice Summary section
-(per-pharmacy `rate × count = subtotal`, deliveries-by-city, `Need to
-Calculate`/`Need to Check` counts, pharmacy total, final flag, and a grand
-total).
+priced deliveries, excluding `Need to Calculate`), `needsCalc`, and `final`
+(`true` when there are no `Need to Calculate` rows). The upload page renders a
+green/red status flag per file and an Invoice Summary section (per-pharmacy
+`rate × count = subtotal`, deliveries-by-city, `Need to Calculate` count,
+pharmacy total, final flag, and a grand total).
