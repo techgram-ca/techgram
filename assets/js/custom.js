@@ -16,11 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
 		  });
 		});
 
+		// Collect the selected services (checkboxes)
+		const services = Array.from(
+		  form.querySelectorAll('input[name="services"]:checked')
+		).map((cb) => cb.value);
+
+		const businessType = document.getElementById("business_type").value;
+		const phone = document.getElementById("phone").value.trim();
+
+		// Build a readable summary so the existing backend/email keeps working
+		const message =
+		  `Business type: ${businessType || "N/A"}\n` +
+		  `Interested in: ${services.length ? services.join(", ") : "N/A"}`;
+
 		const payload = {
 		  name: document.getElementById("name").value.trim(),
 		  business_name: document.getElementById("business").value.trim(),
 		  email: document.getElementById("email").value.trim(),
-		  message: document.getElementById("message").value.trim(),
+		  phone: phone,
+		  business_type: businessType,
+		  services: services,
+		  message: message,
 		  recaptcha_token: token
 		};
 
@@ -31,6 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 
 		if (!res.ok) throw new Error();
+
+		// Fire Meta Pixel Lead event on successful submission
+		if (typeof fbq === "function") {
+		  fbq('track', 'Lead');
+		}
 
 		showContactMessage("Thanks! We'll contact you soon.", true);
 	  } catch (err) {

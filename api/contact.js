@@ -11,7 +11,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { name, business_name, email, message, recaptcha_token } = req.body;
+  const { name, business_name, email, phone, business_type, services, message, recaptcha_token } = req.body;
 
   // Verify reCAPTCHA token
   if (!recaptcha_token)
@@ -45,7 +45,10 @@ export default async function handler(req, res) {
       text: `
             Name: ${name}
             Business: ${business_name || "N/A"}
+            Business Type: ${business_type || "N/A"}
             Email: ${email}
+            Phone: ${phone || "N/A"}
+            Interested In: ${Array.isArray(services) && services.length ? services.join(", ") : "N/A"}
             Message: ${message || "N/A"}
       `
     });
