@@ -6,6 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	  const form = e.target;
 	  const submitBtn = form.querySelector('button[type="submit"]');
+
+	  // Collect the selected services (checkboxes) — at least one is required
+	  const services = Array.from(
+		form.querySelectorAll('input[name="services"]:checked')
+	  ).map((cb) => cb.value);
+
+	  if (services.length === 0) {
+		showContactMessage("Please select at least one service you're interested in.", false);
+		return;
+	  }
+
 	  submitBtn.textContent = 'Sending...';
 	  submitBtn.disabled = true;
 
@@ -16,16 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		  });
 		});
 
-		// Collect the selected services (checkboxes)
-		const services = Array.from(
-		  form.querySelectorAll('input[name="services"]:checked')
-		).map((cb) => cb.value);
-
 		const businessType = document.getElementById("business_type").value;
 		const phone = document.getElementById("phone").value.trim();
 
-		// Build a readable summary so the existing backend/email keeps working
+		// Build a readable summary so the existing backend/email keeps working.
+		// Phone is appended here because the leads table has no phone column.
 		const message =
+		  `Phone: ${phone || "N/A"}\n` +
 		  `Business type: ${businessType || "N/A"}\n` +
 		  `Interested in: ${services.length ? services.join(", ") : "N/A"}`;
 
